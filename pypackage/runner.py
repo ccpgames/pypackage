@@ -48,7 +48,7 @@ from setuptools.command.test import test as TestCommand
 
 
 class PyPackageTest(TestCommand):
-    """TestCommand subclass to use pytest with setup.py test."""
+    """TestCommand subclass to enable setup.py test."""
 
     def finalize_options(self):
         """Find our package name and test options to fill out test_args."""

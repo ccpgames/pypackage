@@ -23,6 +23,16 @@ The main goal of Pypackage is to make python packaging easier and faster.
 Wouldn't it be nice if you could just write some python, run a command, and
 have a distributable package? Well now you can!
 
+
+## Features
+
+ * automatic python modules and packages detection
+ * automatic inclusion of non-python package data files, and their inclusion in and writing of the MANIFEST.in
+ * support for three different testing frameworks (pytest, nose, and unittest) for use with `setup.py test`
+ * automatic script detection (any executable file in ./bin or ./scripts)
+ * curses front-end to python classifiers selection
+
+
 ## Example, "Hello World" application:
 
 ```bash
@@ -57,7 +67,7 @@ relationship being true in the distribution version of the package.
 
 # Copyright and License
 
-pypicloud-tools was written by Adam Talsma
+pypackage was written by Adam Talsma
 
 Copyright (c) 2015 CCP hf.
 

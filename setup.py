@@ -44,9 +44,27 @@ relationship being true in the distribution version of the package.
 """
 
 
-import os
 from setuptools import setup
 from setuptools import find_packages
+from setuptools.command.test import test as TestCommand
+
+
+class PyTest(TestCommand):
+    """TestCommand subclass to use pytest with setup.py test."""
+
+    def finalize_options(self):
+        """Find our package name and test options to fill out test_args."""
+
+        TestCommand.finalize_options(self)
+        self.test_args = ["-v", "-rx", "--cov-report", "term-missing", "--cov",
+                          "pypackage"]
+        self.test_suite = True
+
+    def run_tests(self):
+        """pytest discovery and test execution."""
+
+        import pytest
+        raise SystemExit(pytest.main(self.test_args))
 
 
 setup(
@@ -68,6 +86,7 @@ setup(
         "nose       >= 1.3.0",
         "PyYAML     >= 3.0",
     ],
+    cmdclass={"test": PyTest},
     tests_require=["pytest", "pytest-cov"],
     entry_points={"console_scripts": [
         "py-build   = pypackage.commands:build",

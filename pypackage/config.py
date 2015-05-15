@@ -14,6 +14,7 @@ import logging
 import unittest
 from pprint import pformat
 from collections import OrderedDict
+from setuptools import find_packages
 
 from .runner import TestRunner
 from .runner import NOSE_TEMPLATE
@@ -124,8 +125,28 @@ class Config(object):
     def _as_kwargs(self):
         """Builds a dict suitable for use with setuptools.setup directly."""
 
-        return OrderedDict([(key, getattr(self, key)) for key in Config._KEYS
-                            if hasattr(self, key)])
+        kwargs = OrderedDict()
+
+        for key in Config._KEYS:
+            if hasattr(self, key):
+                if key == "packages":
+                    for package in self.packages:
+                        if package.startswith("find_packages(") and \
+                                not ";" in package:
+                            try:
+                                found_packages = eval(package)
+                            except:
+                                continue
+                            else:
+                                kwargs[key] = found_packages
+                                break
+                    else:
+                        kwargs[key] = self.packages
+                else:
+                    kwargs[key] = getattr(self, key)
+
+        return kwargs
+
 
     @property
     def _metadata(self):
