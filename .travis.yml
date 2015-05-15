@@ -1,0 +1,17 @@
+language: python
+
+python:
+  - '2.7'
+  - '3.4'
+
+before_install:
+  - pip install -U coveralls pip pytest pytest-cov setuptools
+
+script: python setup.py test
+
+after_success:
+  - coveralls
+
+notifications:
+  slack:
+    secure: CuyuO7xWmWebhRw64LJzl/ab1wiQbpmDgm0ui8/M5Yg3J9Oz1m7R/0kSBbcDwA2oerQCpEEVh6yB6okyFJ+0HSC08SepI0W68/AwbvIDxYOtLgCBeLLZoelWyDXVh1E45pK+kLoFh5dhRF1oQDxMMXE0q7V8jKQggrPw1amRdTMrBv6AXIWgyvS8T7oHOgABnxgzsEsBevXUSbjbyfKL2TwOt897A2CTGj0nUsvb3nviGG6eOwp0dGSBsAMU9MwUWkCWD1P2KehwDleXQG8QnkI30oNiBK8c72JwCQ0V5Ays62ZvkcA3B/bBK0UQOlqL73Oa80JPbgAcz0QYnzgCiNuvLxoYARnBEzvO4wqlzJWG2xPF9BjCvfslbgF758YSP8GD84DjXLDYw39HDEDMgeW2uooC5441S74OTYzkQXs42flNs/eF4O1HSWFUUdGMM1bBQ2+gBPnJFdCsoExEth+yLEqzRGx9XwcQQWMuk5qiomySOk/MKgGcK/wDCUPsRhRR6GFZdiyD8y666PKFiMNjp8FyotP9kGf05dG4bQrKZQUyf2KTb770eHJmOCqwFed7UVf/GYU/gTZYo0nUTWw6x168K/Z/W/4PzHtTHTuoQ9oGU86B1hrGtVLvE/RQBYf8yzBM9m1yhhO8H4qqLWUNFpcBlclQhIDjTaFH+K4=
