@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pypackage by ccpgames</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Pypackage</h1>
+        <p>Tools to package python from static metadata</p>
+
+        <p class="view"><a href="https://github.com/ccpgames/pypackage">View the Project on GitHub <small>ccpgames/pypackage</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ccpgames/pypackage/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ccpgames/pypackage/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ccpgames/pypackage">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="pypackage" class="anchor" href="#pypackage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pypackage</h1>
+
+<p><a href="https://travis-ci.org/ccpgames/pypackage"><img src="https://travis-ci.org/ccpgames/pypackage.png?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/r/ccpgames/pypackage?branch=master"><img src="https://coveralls.io/repos/ccpgames/pypackage/badge.svg?branch=master" alt="Coverage Status"></a>
+<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/pypi/v/pypackage.svg" alt="Version"></a>
+<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/badge/format-wheel-green.svg?" alt="Download format"></a>
+<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/pypi/dm/pypackage.svg" alt="Downloads this month"></a>
+<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/badge/status-beta-orange.svg" alt="Development Status"></a>
+<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/github/license/ccpgames/pypackage.svg" alt="License"></a></p>
+
+<p>Pypackage is a collection of python packaging applications including:</p>
+
+<pre><code>py-build
+py-develop
+py-install
+py-setup
+py-test
+</code></pre>
+
+<p>The main goal of Pypackage is to make python packaging easier and faster.</p>
+
+<p>Wouldn't it be nice if you could just write some python, run a command, and
+have a distributable package? Well now you can!</p>
+
+<h2>
+<a id="example-hello-world-application" class="anchor" href="#example-hello-world-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example, "Hello World" application:</h2>
+
+<div class="highlight highlight-bash"><pre>$ mkdir hello_world
+$ <span class="pl-c1">cd</span> hello_world
+$ vim hello_world.py   <span class="pl-c"># write your python here... :)</span>
+$ py-build -is</pre></div>
+
+<p>The <code>py-build -is</code> command will take you through an interactive py-build
+session and save the setup.py to disk after creating it, but will not run it.</p>
+
+<p>You can also use the <code>py-setup</code> command at any time to print what Pypackage
+would use as a setup.py in the current directory's context.</p>
+
+<p>Metadata can be mixed in with site-wide defaults from $HOME/.pypackage if you
+want to fill in some common attributes for all your projects.</p>
+
+<p>Pypackage also provides three different test runners to automatically find and
+run your tests with <code>python setup.py test</code>, you can use any of pytest, nose or
+unittest.</p>
+
+<p>To be clear though: pypackage does not intend on replacing setuptools, pip, or
+really anything at all in the python packaging tool-chain, it only attempts to
+compliment those utilities and make getting started with python packaging a
+little easier.</p>
+
+<p>In my utopian perfect dream world, I'd see projects not having a setup.py under
+source control, instead only a static metadata file, then having the inverse
+relationship being true in the distribution version of the package.</p>
+
+<h1>
+<a id="copyright-and-license" class="anchor" href="#copyright-and-license" aria-hidden="true"><span class="octicon octicon-link"></span></a>Copyright and License</h1>
+
+<p>pypicloud-tools was written by Adam Talsma</p>
+
+<p>Copyright (c) 2015 CCP hf.</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ccpgames">ccpgames</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
