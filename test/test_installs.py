@@ -48,7 +48,8 @@ def test_with_data(with_data):
     with mock.patch.object(setuptools, "setup") as mocked_setup:
         install()
     assert sys.argv == ["setup.py", "install"]
-    package = os.path.basename(with_data)
+    root, pkg_root = with_data
+    package = os.path.basename(pkg_root)
     mocked_setup.assert_called_once_with(**{
         "name": package,
         "packages": [package],

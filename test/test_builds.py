@@ -3,6 +3,7 @@
 
 import os
 import glob
+import codecs
 import pytest
 import tarfile
 import zipfile
@@ -110,9 +111,10 @@ def test_with_data(with_data):
     """Ensure the non-python data files are being picked up."""
 
     build()
-    dist_dir = verify_artifacts(with_data)
+    root, pkg_root = with_data
+    dist_dir = verify_artifacts(root)
 
-    package_name = os.path.basename(with_data)
+    package_name = os.path.basename(pkg_root)
     expected_files = [
         "{}/data/data_1".format(package_name),
         "{}/__init__.py".format(package_name),
@@ -126,6 +128,32 @@ def test_with_data(with_data):
 
     verify_wheel(expected_files, dist_dir)
     verify_source(expected_in_source, dist_dir)
+
+
+def test_manifest_mixin(with_data):
+    """Ensure we can write a partial MANIFEST.in file."""
+
+    root, pkg_root = with_data
+    pkg_name = os.path.basename(pkg_root)
+    with open(os.path.join(pkg_root, "data", "data_2"), "w") as opendata:
+        opendata.write("some data")
+
+    with open(os.path.join(root, "MANIFEST.in"), "w") as openmanifest:
+        openmanifest.write("include {}/data/data_2\n".format(pkg_name))
+
+    build()
+    dist_dir = verify_artifacts(root)
+
+    tar_fname = glob.glob(os.path.join(dist_dir, "*.tar.gz"))[0]
+    with tarfile.open(tar_fname, "r:gz") as tar_file:
+        tar_file.getnames()
+        manifest = [f for f in tar_file.members if "MANIFEST.in" in f.name][0]
+        content = tar_file.extractfile(manifest).read()
+
+        assert [codecs.decode(l, "utf-8") for l in content.splitlines()] == [
+            "include {}/data/data_2".format(pkg_name),
+            "include {}/data/data_1".format(pkg_name),
+        ]
 
 
 def test_with_scripts(with_scripts):

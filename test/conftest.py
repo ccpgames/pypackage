@@ -30,7 +30,7 @@ class TestModule(object):
 
 
 @pytest.fixture
-def new_module(auto_sys_argv, move_home_pypackage):
+def new_module(reset_sys_argv, move_home_pypackage):
     """Creates a new module name with TestModule and its base directory."""
 
     TestModule.make_new()
@@ -102,7 +102,7 @@ def with_data(request, new_package):
     write_py(data_dir, "data_1", data=True)
 
     request.addfinalizer(module_cleanup)
-    return new_module
+    return new_module, pkg_root
 
 
 @pytest.fixture(params=("bin", "scripts"))
@@ -161,7 +161,7 @@ def write_py(filepath, filename, my_function=False, data=False, script=False):
 
 
 @pytest.fixture
-def auto_sys_argv(request, scope="function", autouse=True):
+def reset_sys_argv(request, scope="function", autouse=True):
     """Automatically clears sys.argv before and after each test."""
 
     sys._argv = sys.argv
