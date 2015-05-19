@@ -6,6 +6,7 @@ Setup is a bit of a snowflake in that it doesn't build anything, takes no args.
 """
 
 
+import os
 import sys
 
 from . import pypackage_setup
@@ -85,7 +86,8 @@ def setup():
                                     line in setup.__doc__.splitlines()]))
     elif flags("-v", "--version"):
         raise SystemExit(VERSION)
-    elif len(sys.argv) == 3:
-        print(get_config(sys.argv[2]))
+    elif len(sys.argv) >= 2:
+        for arg in sys.argv[1:]:
+            print(get_config(arg))
     else:
         print(get_config())
