@@ -6,7 +6,6 @@ import glob
 import pytest
 import tarfile
 import zipfile
-import importlib
 
 from pypackage import commands
 
