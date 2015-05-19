@@ -7,7 +7,7 @@ import pytest
 import tarfile
 import zipfile
 
-from pypackage import commands
+from pypackage.commands import build
 
 
 def verify_wheel(expected, zip_path):
@@ -23,10 +23,11 @@ def verify_wheel(expected, zip_path):
         else:
             pytest.fail("{} not found in wheel!".format(expected_file))
 
-    assert len(wheel_files) == len(expected) + 6
+    standard_wheel_files = ["DESCRIPTION.rst", "WHEEL", "METADATA", "RECORD",
+                            "metadata.json", "top_level.txt"]
+    assert len(wheel_files) == len(expected) + len(standard_wheel_files)
 
-    for std_file in ["DESCRIPTION.rst", "metadata.json", "top_level.txt",
-                     "WHEEL", "METADATA", "RECORD"]:
+    for std_file in standard_wheel_files:
         for file_ in wheel_files:
             if os.path.sep in file_:
                 if std_file == os.path.split(file_)[1]:
@@ -79,7 +80,7 @@ def verify_artifacts(mod_dir):
 def test_simple_module(simple_module):
     """Test a single simple python module."""
 
-    commands.build()
+    build()
 
     mod_dir, mod_name = simple_module
     dist_dir = verify_artifacts(mod_dir)
@@ -92,7 +93,7 @@ def test_simple_module(simple_module):
 def test_simple_package(simple_package):
     """Ensure a simple normal python package is correctly built."""
 
-    commands.build()
+    build()
     dist_dir = verify_artifacts(simple_package)
 
     package_name = os.path.basename(simple_package)
@@ -108,13 +109,12 @@ def test_simple_package(simple_package):
 def test_with_data(with_data):
     """Ensure the non-python data files are being picked up."""
 
-    commands.build()
+    build()
     dist_dir = verify_artifacts(with_data)
 
     package_name = os.path.basename(with_data)
     expected_files = [
         "{}/data/data_1".format(package_name),
-        "{}/data/data_2".format(package_name),
         "{}/__init__.py".format(package_name),
         "{}/my_module.py".format(package_name),
     ]
@@ -132,7 +132,7 @@ def test_with_scripts(with_scripts):
     """Ensure the executable scripts are being included."""
 
     package_dir, script_dir = with_scripts
-    commands.build()
+    build()
     dist_dir = verify_artifacts(package_dir)
 
     package_name = os.path.basename(package_dir)

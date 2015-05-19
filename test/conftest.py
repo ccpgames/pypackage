@@ -6,6 +6,7 @@ import sys
 import pytest
 import random
 import shutil
+from collections import defaultdict
 
 
 class TestModule(object):
@@ -29,7 +30,7 @@ class TestModule(object):
 
 
 @pytest.fixture
-def new_module():
+def new_module(auto_sys_argv, move_home_pypackage):
     """Creates a new module name with TestModule and its base directory."""
 
     TestModule.make_new()
@@ -99,7 +100,6 @@ def with_data(request, new_package):
     data_dir = os.path.join(pkg_root, "data")
     os.mkdir(data_dir)
     write_py(data_dir, "data_1", data=True)
-    write_py(data_dir, "data_2", data=True)
 
     request.addfinalizer(module_cleanup)
     return new_module
@@ -162,11 +162,52 @@ def write_py(filepath, filename, my_function=False, data=False, script=False):
 
 @pytest.fixture
 def auto_sys_argv(request, scope="function", autouse=True):
+    """Automatically clears sys.argv before and after each test."""
+
     sys._argv = sys.argv
-    sys.argv = []
+    sys.argv = ["pypackage-tests"]
     request.addfinalizer(sys_argv_reset)
 
 
 def sys_argv_reset():
+    """Reset function for sys.argv called at the end of each test case."""
+
     sys.argv = sys._argv
     del sys._argv
+
+
+@pytest.fixture
+def move_home_pypackage(request, scope="module", autouse=True):
+    """Moves your $HOME/.pypackage file if it exists for the test session."""
+
+    site_file = os.path.join(os.path.expanduser("~"), ".pypackage")
+    tildes = 1
+    while os.path.isfile("{}{}".format(site_file, "~" * tildes)):
+        tildes += 1
+    try:
+        shutil.move(site_file, "{}{}".format(site_file, "~" * tildes))
+    except Exception as error:
+        if error.errno == 2:
+            pass  # original file didn't exist
+        else:
+            raise
+    else:
+        print('adding finalizer')
+        request.addfinalizer(move_home_pypackage_back)
+
+
+def move_home_pypackage_back():
+    """Returns your $HOME/.pypackage file to it's rightful place."""
+
+    print("finalizer called")
+    backups = defaultdict(list)
+    home = os.path.expanduser("~")
+    for file_name in os.listdir(home):
+        if ".pypackage" in file_name and file_name.endswith("~"):
+            file_path = os.path.join(home, file_name)
+            backups[os.stat(file_path).st_ctime].append(file_path)
+
+    shutil.move(
+        max(backups[max(backups)]),  # the longest of the lastest created
+        os.path.join(home, ".pypackage"),
+    )
