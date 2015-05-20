@@ -143,9 +143,7 @@ def _guess_at_things(config):
 
     package_files = potential_data_files(scripts)
     if package_files:
-        guesses["package_data"] = {
-            getattr(config, "name", guesses["name"]): package_files
-        }
+        guesses["package_data"] = package_files
 
     return guesses
 
@@ -183,7 +181,7 @@ def perform_guesswork(config, options):
             from_user = INPUT(query)
             try:
                 from_user = int(from_user)
-                assert 1 < from_user <= len_g  # no negatives, inside len_g
+                assert 1 <= from_user <= len_g  # no negatives, inside len_g
             except:
                 if str(from_user).strip().lower() == "all":
                     print("ignoring all guesses")
@@ -198,7 +196,12 @@ def perform_guesswork(config, options):
 
     for atr in ("name", "scripts", "py_modules", "package_data"):
         if (not hasattr(config, atr) or options.re_probe) and guesses.get(atr):
-            setattr(config, atr, guesses[atr])
+            if atr == "package_data":  # set the name as late as possible
+                setattr(config, atr, {
+                    getattr(config, "name", guesses["name"]): guesses[atr]
+                })
+            else:
+                setattr(config, atr, guesses[atr])
 
     if getattr(config, "package_data", None) and \
             not getattr(config, "include_package_data", None):
