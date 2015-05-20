@@ -11,7 +11,7 @@ from .constants import VERSION
 from .constants import CHECKMARK
 
 
-class BoxSelector(object):
+class BoxSelector(object):  # pragma: no cover
     """Originally designed for accman.py.
 
     Display options build from a list of strings in a (unix) terminal.
