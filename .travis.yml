@@ -1,17 +1,20 @@
 language: python
-
 python:
-  - '2.7'
-  - '3.4'
-
+- '2.7'
+- '3.4'
 before_install:
-  - pip install -U coveralls pip pytest pytest-cov setuptools
-
+- pip install -U coveralls pip pytest pytest-cov setuptools
 script: python setup.py test
-
 after_success:
-  - coveralls
-
+- coveralls
 notifications:
   slack:
     secure: o2NlD7CY5u12fw1ezIvZXRDg4i6yej1rcxx3OdgT95ELhFJfAGX/eRuZQDebc1oH4Sk0j1a62unE1yJJFepJI0XMHNuxVlUX0hWV+jJmxIJE/x6PljEqJIzByeMuWbxiokBowH/oHLKuHeXVqpK0ZzKQygwnNmQjrAPobugFioRaO9xp5T2aw6UrUFRyDxE0XZLaMMbg3oYxvlvPwm95MtZZWavMgLDg7sksa+7oADCSmdNPhisz23Ux6ZY8VZyk17vnl3SORc6a1FQiinU63503Au1rW695WfbR5f2hQDoP4pNES3SwNwF9sm6QAotJzkBjNKPHjslWkJ1kPjshYwW6BfOb/5MsDagHL9/8cJLAZPvqyScvDKHZjSsyk0ZIcGLwXCXHOjj62YVPKgaBuYb3ZrVfQiuhXJHlT2fuEikhSDcE4Z9wJafxxmBAdXS0TL4aA/ieUYdVH6mMSteIe+93nvi5VHa2Ip7SNDQ0M/JwpdIRx0UYlAd7tN8VNwCR013rfXqVEdEOnfvXiWhSAMsxbikxU1CrTdC7SKHtq0ha+KM5XmyiOu0Be38FOnkSFT/xXWCdRvUDJ7lD9YmRGtjkxgUBF+Fns2X0dJPXUyiK+CYpGn5sLC8jPhlg5QEuCJFSRR41HXocBkRLmpud6UN/Zo3iOeiFhM2iK1sYNX0=
+deploy:
+  provider: pypi
+  user: a-tal
+  password:
+    secure: mAFvM0tVmVQlobUvBKBqedZjWOOJKrG3af82Tco3qnlDPdWt9w64dHUXNEP0XVKInDzO7oqFPofKP2zgniVhR2iLYRjWAzrDxHIIxh0NDtHJBNbukkjPQNzx5sbS9P3WVxpZrOx4veY1ER18D49ZgjvsEvZ6Na4ccUTgv2YmysAgSh8uVgOvNFXMuX2m5ket7WCRQ3DLaunvNxVjvWg0pBhyKHFCCCtml+oVN3epvKtc93reBY6NdetyPTDT7/VNJOkGWdr0oK1ZMZi49Ae/7Wqi1dH1nFW45un9dYBJzdl66NSymqISjSq8DMQvnse9KXiCL8+zIs74nPKeEAxZn/SIo/G7/TprxuM97+jUyhzxZQ0Uch1l7TPRGbYMAoLrEon0k+EA7OghOLlg9tNHDG6JFHaeonJGEyRvu0H5fInLdDvNmgyDjVYlzV7WB4lKundGyQ5LTKtTWCh1wrio2sW3OJYKi5CXunlEeCRxq9fi8ixjAVYDodr05winnfaBxal2JGc8CkmG0bszat1OtV0mtvHYuIRMFOFwRlr5MAbK3rATZ8a15Ijn9Ydgeff9YXqFYQbtGhA6HvT4L2tVmNFxAu9ryfl9qlUPkNKeT3oDJEVYeWxl8EjwRyjytwPN0UtzxrVtuCIrYPgyqeMo+fwTdH3dk7xdaObpAp5Ui5Q=
+  on:
+    tags: true
+    repo: ccpgames/pypackage
