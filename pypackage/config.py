@@ -132,7 +132,8 @@ class Config(object):
                 if key == "packages":
                     for package in self.packages:
                         if package.startswith("find_packages(") and \
-                                not ";" in package:
+                                not ";" in package and not "." in package:
+                            # no ;'s or .'s here to reduce attack surface
                             try:
                                 found_packages = eval(package)
                             except:
@@ -185,7 +186,7 @@ class Config(object):
             self._test_runner_string() or "\n",
             "setup(",
             "\n".join([
-                "    {}={},".format(key, _mulitline(val)) for key, val in
+                "    {}={},".format(key, _multiline(val)) for key, val in
                 self._as_kwargs.items() if key not in ("cmdclass", "packages")
             ]),
             "{}{})".format(
@@ -393,7 +394,7 @@ class Config(object):
         elif isinstance(type_, dict):
             raise TypeError("{} should be a dict, not {}!".format(
                 key,
-                type(getattr(self, key)),
+                type(getattr(self, key)).__name__,
             ))
         elif type_ is list and isinstance(getattr(self, key), list):
             setattr(self, key, ensure_list(getattr(self, key)))
@@ -402,29 +403,32 @@ class Config(object):
         elif not isinstance(getattr(self, key), type_):
             if isinstance(type_, tuple):  # multiple acceptable values
                 for type__ in type_:
-                    try:
-                        setattr(self, key, type__(getattr(self, key)))
-                    except:
-                        pass
-                    else:
+                    if type__ is list:
+                        setattr(self, key, [getattr(self, key)])
                         break
+                    else:
+                        try:
+                            setattr(self, key, type__(getattr(self, key)))
+                            break
+                        except:
+                            pass
                 else:
                     raise TypeError("{} should be a {} or {}, not {}!".format(
                         key,
-                        ", ".join(type_[:-1]),
-                        type_[-1],
-                        type(getattr(self, key)),
+                        ", ".join([t.__name__ for t in type_[:-1]]),
+                        type_[-1].__name__,
+                        type(getattr(self, key)).__name__,
                     ))
             else:
                 try:
                     setattr(self, key, type_(getattr(self, key)))
                 except:
                     raise TypeError("{} should be a {}, not {}!".format(
-                        key, type_, type(getattr(self, key)),
+                        key, type_.__name__, type(getattr(self, key)).__name__,
                     ))
 
 
-def _mulitline(value, indent=4):
+def _multiline(value, indent=4):
     """Return value as a multiline (pretty) string, with indent."""
 
     val = pformat(value)
