@@ -23,7 +23,7 @@ class SetupContext(object):
         # dump the config out as a setup.py for back-compat...
         # it's not actually used this build, we pass kwargs directly
         with open("setup.py", "w") as opensetup:
-            opensetup.write(str(self.config))
+            opensetup.write("{}\n".format(str(self.config)))
 
         return self
 
@@ -71,7 +71,7 @@ class ManifestContext(object):
         if add_to_manifest:
             self._clean = True
             with open("MANIFEST.in", "a") as openmanifest:
-                openmanifest.write("\n".join(add_to_manifest))
+                openmanifest.write("{}\n".format("\n".join(add_to_manifest)))
 
         return self
 
