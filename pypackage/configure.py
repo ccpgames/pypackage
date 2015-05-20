@@ -26,7 +26,7 @@ def ask_for_value(key):
     return user_return or None
 
 
-def handle_classifiers(config):
+def handle_classifiers(config):  # pragma: no cover
     """If -c/--classifiers is used on the command line, enters a curses screen.
 
     Note: doesn't work on non-POSIX compliant operating systems
@@ -39,7 +39,7 @@ def handle_classifiers(config):
         from .classified import choose_classifiers
     except Exception as error:
         print(error)
-        print("Could not load classifiers chooser")
+        print("Could not load classifiers selector")
     else:
         return choose_classifiers(config)
 
@@ -101,7 +101,10 @@ def coerce_to_expected(value, key, type_):
     elif isinstance(type_, dict):
         return ast.literal_eval(value)  # oh god, the humanity
     elif type_ is bool:
-        return bool(ast.literal_eval(value))
+        try:
+            return bool(ast.literal_eval(value))
+        except ValueError:
+            return bool(value)  # malformed strings get you here, will be True
     elif not isinstance(value, type_):
         return type_(value)
     else:
@@ -161,6 +164,22 @@ def feature_attributes(config, options):
     return unconfigured
 
 
+def extended_attributes(config, options):
+    """Builds a list of unconfigured extended attributes in config."""
+
+    all_in_this_cat = list(config._KEYS.keys())[17:]
+
+    if options.re_config:
+        return all_in_this_cat
+
+    unconfigured = []
+    for key in all_in_this_cat:
+        if not hasattr(config, key):
+            unconfigured.append(key)
+
+    return unconfigured
+
+
 def run_interactive_setup(config, options):
     """Interactively fills in attributes of config.
 
@@ -193,8 +212,7 @@ def run_interactive_setup(config, options):
 
     if options.extended:
         print(centered(" Extended Attributes "))
-        for key in [k for k in list(config._KEYS.keys())[17:] if
-                    options.re_config or not hasattr(config, k)]:
+        for key in extended_attributes(config, options):
             set_value_in_config(key, config, config._KEYS)
 
     return config
