@@ -76,7 +76,7 @@ setup(
     download_url="https://github.com/ccpgames/pypackage",
     description="Pypackage looks to package python without writing a setup.py",
     long_description=__doc__.strip(),
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["test"]),
     package_data={"pypackage": ["pypackage/classifiers"]},
     include_package_data=True,
     install_requires=[
