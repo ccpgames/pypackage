@@ -15,6 +15,7 @@ deploy:
   - provider: pypi
     user: atal
     skip_cleanup: true
+    distributions: "sdist bdist_wheel"
     password:
       secure: "NZFJNlEENiK9WtivUaZq/wMavYSqQTq7J7kyVPjcjoAiv0M+812TlW9bwsAsStyynmBNSHn9PLDhNUmhENzONiXUSowbeEhhQsmHMym834llLyI8vqqthyvEx9rAQEFDHqrEP4V4JNvPbC6SOBBnZurxospDdbfHC7g4OhbnyvIgx+CNisnlU/cbgUV8taJrGyr8mC04sYn9B4P3810qUxR5ffoZwHjPkgMm7qYcot+Ek++yy56h3Uj76JfQOfx/zrKG2AhLlr64Pf5iGMXYCrhvBCG/eAb9UqtB8oE7ab4HCXt8hrx8F5Iy3TDxoc8RWBJKEfXBBTxSYCivfgOvypCT4m+ToE07x9dks/37KidIBAi7DWGV6ZrdvGfgVqkMBY03b5jNGiDvJXaYjOQInbeaaewlcBRgYcnDjS3m6OvGq40iq7+Hk72bdPlhPWtEGJgd2gmktJ1Qj2wYO0sTRtRu99VOjPuyl8MQQ2+XGzVuz5nqh4Aql9/tk2FxZeP/yNTJHH5g7+FC/kHqQXfqaYQrbCrpAvMJd2Kb74AZoFRisqbYaCfYWUOnHVPP8M+v6b7VvcEsfZoreSr65fwMNDz0IkE+Pm/T8jqsNFxoc6IcFMVyHkl3w2WYREFRbfOfIZYtarnVYCFn+HGedtCCdPJIBNTQhlfOjGTIAEQ7KSo="
     on:
@@ -23,7 +24,7 @@ deploy:
   - provider: releases
     api_key:
       secure: "sPKGWze1gfiBWDTWdEhaeYdvMpvw014OhZ8n/+txTtnmhUVO/xK/nS/QXJg8V5r7Q1P0/fsuVY3F8JKMwNSuVBa67kNDeU3sELh6lEaN5A4ajeZQutUBNRpJjYG3td2IGB2QyahcJC3dhVTRpP/0X9w7ktFFNFxOgfMg1UIctUW5m1dDfqZ/Ncio8XFGcWOvmjpvzjNqhw5cpBuMNtkcY6QgVDKSJTPVuYqYfejLf8oXx2o94YO029v+QrXHEiaQUbt+8PrkM0QpKrY+0tg0rqGq4yLGdEXeCuJj0zRX3txNPoirqpYAEmLAuVnN5r0n3rj4IF9rw5e1mnvNJDmY7yVuUnzk+2YFLhlWUKDsjHGEbtyP9fT01tvtvvZr1z5661SgPDONdVsajmt1dMfAINgDZuxw1C/s3SozOreL0ZUrb3Oz5il2bfDNPLd1hMOIL7aSybKl+CvyKpdoBSpFYQQxUsT76f8r6asaFnpiiq/2QPK9BbKeHNiZCQYLz1ZtMfAtXHnYA9kxmp5wf7iNhdLkfk3h281a88JyN52Dyi2bZXjCwjntvaMZWquAHvKRMMSQcOh+fxvlmyGweGxaAmRbcBfgi8nZt3vJ2E2HgyNY5MWXBh3GpEBchmeumUT0rFAntnKfciHUPhIujx3Z5Z6qrj23sNEaerzjUxg/b/k="
-    file: "/home/travis/dist/pypackage*.whl"
+    file: "/home/travis/build/ccpgames/pypackage/dist/pypackage*.whl"
     skip_cleanup: true
     on:
       tags: true
