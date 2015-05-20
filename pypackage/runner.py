@@ -10,7 +10,7 @@ import unittest
 from setuptools.command.test import test as TestCommand
 
 
-class TestRunner(TestCommand):
+class TestRunner(TestCommand):  # pragma: no cover
     """TestCommand subclass to use pytest or nose with setup.py test."""
 
     @staticmethod

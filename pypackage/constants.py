@@ -6,11 +6,11 @@ import sys
 import pkg_resources
 
 
-if sys.version_info > (3,):
+if sys.version_info > (3,):  # pragma: no cover
     INPUT = input
     STRING_TYPE = str
     CHECKMARK = chr(0x2713)
-else:
+else:  # pragma: no cover
     INPUT = raw_input
     STRING_TYPE = basestring
     CHECKMARK = unichr(0x2713)
