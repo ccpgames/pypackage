@@ -96,6 +96,36 @@ source control, instead only a static metadata file, then having the inverse
 relationship being true in the distribution version of the package.</p>
 
 <h2>
+<a id="example-write-python-and-send-it-to-pypi" class="anchor" href="#example-write-python-and-send-it-to-pypi" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example, write Python and send it to PyPI</h2>
+
+<p>First, <a href="https://docs.python.org/2/distutils/packageindex.html#pypirc">configure your ~/.pypirc file</a> with a <code>[pypi]</code> section if you haven't already. Now, assuming you lay out your project something like:</p>
+
+<pre><code>./your_project
+./your_project/README.md
+./your_project/pypackage.meta
+./your_project/...
+./your_project/your_project/__init__.py
+./your_project/your_project/your_code.py
+./your_project/your_project/...
+</code></pre>
+
+<p>With pypackage installed, from <code>./your_project</code> run the following commands to send your project to PyPI for the first time:</p>
+
+<div class="highlight highlight-bash"><pre>$ py-build
+$ py-build -s
+$ python setup.py register
+$ twine upload dist/<span class="pl-k">*</span> <span class="pl-k">||</span> pip install twine <span class="pl-k">&amp;&amp;</span> twine upload dist/<span class="pl-k">*</span></pre></div>
+
+<p>Every time after that, to update your package is a two step process:</p>
+
+<div class="highlight highlight-bash"><pre>$ py-build
+$ twine upload dist/<span class="pl-k">*</span></pre></div>
+
+<p>This will upload a binary wheel and source distribution to PyPI so you can share your work with the world.</p>
+
+<p>The source distribution will include a <code>setup.py</code> and will not include the <code>pypackage.meta</code> if you use one. In this way, Pypackage does not create a build dependency on your distribution, but rather only on your source, or perhaps more specifically, your build chain and/or development environment. Unless you choose to develop off of the distributed source version, then carry on doing your thing. Just don't submit any patches to the <code>setup.py</code> because it's not a real thing in the source. As a project maintainer, you may even consider adding <code>setup.py</code> to the <code>.gitignore</code> of your pypackaged projects.</p>
+
+<h2>
 <a id="further-examples" class="anchor" href="#further-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Further examples</h2>
 
 <p>If your OS can run a bash script, execute <code>demo.sh</code> in the top level of this repo to create a new pypackage venv and three simple example packages in an <code>example</code> directory. From there feel free to play around and experiment with pypackage features and applications.</p>
