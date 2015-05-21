@@ -65,6 +65,39 @@ source control, instead only a static metadata file, then having the inverse
 relationship being true in the distribution version of the package.
 
 
+## Example, write Python and send it to PyPI
+
+First, [configure your ~/.pypirc file](https://docs.python.org/2/distutils/packageindex.html#pypirc) with a `[pypi]` section if you haven't already. Now, assuming you lay out your project something like:
+
+    ./your_project
+    ./your_project/README.md
+    ./your_project/pypackage.meta
+    ./your_project/...
+    ./your_project/your_project/__init__.py
+    ./your_project/your_project/your_code.py
+    ./your_project/your_project/...
+
+With pypackage installed, from `./your_project` run the following commands to send your project to PyPI for the first time:
+
+```bash
+$ py-build
+$ py-build -s
+$ python setup.py register
+$ twine upload dist/* || pip install twine && twine upload dist/*
+```
+
+Every time after that, to update your package is a two step process:
+
+```bash
+$ py-build
+$ twine upload dist/*
+```
+
+This will upload a binary wheel and source distribution to PyPI so you can share your work with the world.
+
+The source distribution will include a `setup.py` and will not include the `pypackage.meta` if you use one. In this way, Pypackage does not create a build dependency on your distribution, but rather only on your source, or perhaps more specifically, your build chain and/or development environment. Unless you choose to develop off of the distributed source version, then carry on doing your thing. Just don't submit any patches to the `setup.py` because it's not a real thing in the source. As a project maintainer, you may even consider adding `setup.py` to the `.gitignore` of your pypackaged projects.
+
+
 ## Further examples
 
 If your OS can run a bash script, execute `demo.sh` in the top level of this repo to create a new pypackage venv and three simple example packages in an `example` directory. From there feel free to play around and experiment with pypackage features and applications.
