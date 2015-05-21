@@ -192,8 +192,8 @@ def move_home_pypackage(request, scope="module", autouse=True):
         else:
             raise
     else:
-        print('adding finalizer')
         request.addfinalizer(move_home_pypackage_back)
+    return site_file
 
 
 def move_home_pypackage_back():

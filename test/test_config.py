@@ -1,6 +1,7 @@
 """Tests for pypackages' config object and helper functions."""
 
 
+import json
 import mock
 import codecs
 import pytest
@@ -230,6 +231,29 @@ def test_json_loading__failure():
     assert patched_err_log.call_args[0][1] == filename
     assert isinstance(patched_err_log.call_args[0][2], ValueError)
     assert patched_err_log.call_count == 1
+
+
+@pytest.mark.parametrize("original, alias",
+    [
+        ("author", "maintainer"),
+        ("author_email", "maintainer_email"),
+        ("description", "long_description"),
+    ]
+)
+def test_default_fillins(original, alias):
+    """pypackage maps a few attributes to aliases if 1/2 is supplied."""
+
+    conf = Config(**{original: "something"})
+    assert getattr(conf, alias) == "something"
+
+
+def test_site_defaults_mixin(move_home_pypackage):
+    """Ensure the site defaults are mixed in if available."""
+
+    with open(move_home_pypackage, "w") as opensite:
+        opensite.write(json.dumps({"author": "you!"}))
+    conf = Config()
+    assert conf.author == "you!"
 
 
 if __name__ == "__main__":
