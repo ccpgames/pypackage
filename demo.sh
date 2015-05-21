@@ -2,13 +2,13 @@
 
 #
 # This script will create a new venv and install pypackage inside it.
-# It then creates three example packages, all inside a new demo_files
+# It then creates three example packages, all inside a new example
 # directory. Only the hello-world package should be installed, the 
 # other two are only tested and built.
 #
 # Make sure to re-activate the venv after running this script with:
 #
-#  $ source demo_files/venv/bin/activate
+#  $ source example/bin/activate
 #
 # then you can inspect the installed state of the demo packages
 #
@@ -16,12 +16,11 @@
 #
 # cleanup and setup
 #
-rm -rf demo_files
-mkdir demo_files
-cd demo_files
-virtualenv --python=python2.7 --no-site-packages venv
-source venv/bin/activate
+rm -rf example
+virtualenv --python=python2.7 --no-site-packages example
+source example/bin/activate
 pip install pypackage
+cd example
 
 #
 # Create hello-world
@@ -139,4 +138,6 @@ py-build
 py-build -s
 cd ..
 
-cd ..
+echo "example packages created! use"
+echo "  source example/bin/activate"
+echo "to activate the example virtualenv"
