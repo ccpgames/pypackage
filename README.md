@@ -65,6 +65,11 @@ source control, instead only a static metadata file, then having the inverse
 relationship being true in the distribution version of the package.
 
 
+## Further examples
+
+If your OS can run a bash script, execute `demo.sh` in the top level of this repo to create a new pypackage venv and three simple example packages in an `example` directory. From there feel free to play around and experiment with pypackage features and applications.
+
+
 # Copyright and License
 
 pypackage was written by Adam Talsma
