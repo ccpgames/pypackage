@@ -100,7 +100,7 @@ The source distribution will include a `setup.py` and will not include the `pypa
 
 ## Further examples
 
-If your OS can run a bash script, execute `demo.sh` in the top level of this repo to create a new pypackage venv and three simple example packages in an `example` directory. From there feel free to play around and experiment with pypackage features and applications.
+If your OS can run a bash script, execute `demo.sh` in the top level of this repo to create a new pypackage venv and some simple example packages in an `example` directory. From there feel free to play around and experiment with pypackage features and applications.
 
 
 # Copyright and License
