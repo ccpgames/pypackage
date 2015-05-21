@@ -10,7 +10,9 @@ after_success:
 notifications:
   slack:
     secure: o2NlD7CY5u12fw1ezIvZXRDg4i6yej1rcxx3OdgT95ELhFJfAGX/eRuZQDebc1oH4Sk0j1a62unE1yJJFepJI0XMHNuxVlUX0hWV+jJmxIJE/x6PljEqJIzByeMuWbxiokBowH/oHLKuHeXVqpK0ZzKQygwnNmQjrAPobugFioRaO9xp5T2aw6UrUFRyDxE0XZLaMMbg3oYxvlvPwm95MtZZWavMgLDg7sksa+7oADCSmdNPhisz23Ux6ZY8VZyk17vnl3SORc6a1FQiinU63503Au1rW695WfbR5f2hQDoP4pNES3SwNwF9sm6QAotJzkBjNKPHjslWkJ1kPjshYwW6BfOb/5MsDagHL9/8cJLAZPvqyScvDKHZjSsyk0ZIcGLwXCXHOjj62YVPKgaBuYb3ZrVfQiuhXJHlT2fuEikhSDcE4Z9wJafxxmBAdXS0TL4aA/ieUYdVH6mMSteIe+93nvi5VHa2Ip7SNDQ0M/JwpdIRx0UYlAd7tN8VNwCR013rfXqVEdEOnfvXiWhSAMsxbikxU1CrTdC7SKHtq0ha+KM5XmyiOu0Be38FOnkSFT/xXWCdRvUDJ7lD9YmRGtjkxgUBF+Fns2X0dJPXUyiK+CYpGn5sLC8jPhlg5QEuCJFSRR41HXocBkRLmpud6UN/Zo3iOeiFhM2iK1sYNX0=
-before_deploy: python setup.py build sdist bdist_wheel
+before_deploy:
+- python setup.py build sdist bdist_wheel
+- if [ "x" == "$(grep $(git tag -l --points-at=HEAD) setup.py)x" ]; then echo 'new tag does not exist in setup.py; bailing!'; exit 1; else echo "tag found in setup.py"; fi
 deploy:
   - provider: pypi
     user: atal
