@@ -3,8 +3,10 @@
 #
 # This script will create a new venv and install pypackage inside it.
 # It then creates three example packages, all inside a new example
-# directory. Only the hello-world package should be installed, the 
-# other two are only tested and built.
+# directory. The hello-world package should be installed, the tested_mod and
+# tested_pkg packages should only be tested and built. The has_data package
+# should also be installed and should have a script entry point of `read_data`
+# which should dump 100B of static random data to stdout.
 #
 # Make sure to re-activate the venv after running this script with:
 #
@@ -43,7 +45,7 @@ python -c 'import my_module; print(my_module.my_function())'
 
 #
 # Create tested_mod
-# 
+#
 mkdir tested_mod
 cd tested_mod
 
@@ -137,6 +139,48 @@ py-build
 # save a copy of the setup.py in the src
 py-build -s
 cd ..
+
+#
+# data project
+#
+
+mkdir -p has_data/has_data/data
+cd has_data/has_data
+touch __init__.py
+
+# create data
+dd if=/dev/random of=data/file bs=10 count=10
+
+# create python module to read and display data
+cat <<EOF > read_data.py
+import os
+
+def to_stdout():
+    random_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "data", "file")
+    print("your random data is:")
+    with open(random_file) as random_data:
+        print(random_data.read())
+EOF
+cd ..
+
+# make a script, (you could use an entry point but this shows the auto pickup)
+mkdir bin
+cat <<EOF > bin/random_data
+#!/usr/bin/env python
+
+from has_data import read_data
+
+if __name__ == "__main__":
+    read_data.to_stdout()
+EOF
+chmod +x bin/random_data
+
+echo '{"version": "1.0.0", "packages": "has_data"}' > pypackage.meta
+
+py-install
+
+random_data
 
 echo "example packages created! use"
 echo "  source example/bin/activate"
