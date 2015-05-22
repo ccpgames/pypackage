@@ -57,7 +57,7 @@ unittest.
 
 To be clear though: pypackage does not intend on replacing setuptools, pip, or
 really anything at all in the python packaging tool-chain, it only attempts to
-compliment those utilities and make getting started with python packaging a
+complement those utilities and make getting started with python packaging a
 little easier.
 
 In my utopian perfect dream world, I'd see projects not having a setup.py under
