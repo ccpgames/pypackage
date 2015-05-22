@@ -2,7 +2,7 @@
 
 [View this on GitHub Pages](http://ccpgames.github.io/pypackage/)
 
-[![Build Status](https://travis-ci.org/ccpgames/pypackage.png?branch=master)](https://travis-ci.org/ccpgames/pypackage)
+[![Build Status](https://travis-ci.org/ccpgames/pypackage.svg?branch=master)](https://travis-ci.org/ccpgames/pypackage)
 [![Coverage Status](https://coveralls.io/repos/ccpgames/pypackage/badge.svg?branch=master)](https://coveralls.io/r/ccpgames/pypackage?branch=master)
 [![Version](https://img.shields.io/pypi/v/pypackage.svg)](https://pypi.python.org/pypi/pypackage/)
 [![Download format](https://img.shields.io/badge/format-wheel-green.svg?)](https://pypi.python.org/pypi/pypackage/)
