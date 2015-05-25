@@ -68,8 +68,8 @@ def build():
 def setup():
     """py-setup will create a setup.py from metadata files and/or inspection.
 
-    It only prints this configuration to stdout, it does not run the setup.py
-    or even save it to disk (py-build does that).
+    It only prints this configuration to stdout, it does not run the setup.py,
+    do any guesswork/inspection, or even save it to disk (py-build does that).
 
     You can use this command to test how changes in your metadata translate to
     changes in the setup.py.

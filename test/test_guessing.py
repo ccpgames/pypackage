@@ -5,6 +5,7 @@ import os
 import sys
 import mock
 import time
+import codecs
 import pytest
 import random
 from collections import OrderedDict
@@ -156,6 +157,19 @@ def test_find_in_files__ignored_dir(find_in_files_setup):
             "__email__ = 'mo@ali.com'",
             '__version__ = "2.0.0-beta"',
         ]))
+
+    find_in_files_asserts(guessing.find_in_files())
+
+
+def test_find_in_files__binary_skip(find_in_files_setup):
+    """Ensure files that we cannot decode are skipped over."""
+
+    version_file = os.path.join(find_in_files_setup[1], "__version__.py")
+    with open(version_file, "wb") as openversionfile:
+        openversionfile.write(codecs.encode("__author__ = 'bob'\n", "utf-8"))
+        openversionfile.write(codecs.encode("__version__ = '", "utf-8"))
+        openversionfile.write(os.urandom(1024))
+        openversionfile.write(codecs.encode("'\n", "utf-8"))
 
     find_in_files_asserts(guessing.find_in_files())
 

@@ -3,6 +3,7 @@
 
 import os
 import re
+import codecs
 from collections import namedtuple
 from collections import OrderedDict
 
@@ -123,8 +124,11 @@ def find_in_files():
             if os.stat(file_path).st_size > 102400:
                 continue
 
-            with open(file_path, "r") as openfile:
-                content = openfile.read()
+            with open(file_path, "rb") as openfile:
+                try:
+                    content = codecs.decode(openfile.read(), "utf-8")
+                except UnicodeDecodeError:
+                    continue
 
             for name, guesses in to_find.items():
                 for i in range(3):
