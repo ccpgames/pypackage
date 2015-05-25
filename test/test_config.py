@@ -33,6 +33,13 @@ def test_malformed_packages_fallback():
     assert conf._packages_string() == ("packages={}".format(garbage), True)
 
 
+def test_supplied_packages():
+    """Ensure the user can provide the packages list."""
+
+    conf = Config(packages="my_package")
+    assert conf._packages_string() == ("packages=['my_package']", False)
+
+
 @pytest.mark.parametrize("runner", ("unittest", "nose", "pytest"))
 def test_runner_args_only_when_set(runner):
     """runner_args should only be in the metadata when they're non-default."""
@@ -225,7 +232,7 @@ def test_json_loading__failure():
         openfile.write("# yeah comments are ok\n{but invalid json: [is not]}")
 
     with mock.patch.object(config.logging, "error") as patched_err_log:
-        assert config.json_maybe_commented(filename, True) == {}
+        assert config.json_maybe_commented(filename) == {}
 
     assert patched_err_log.call_args[0][0] == "Error reading json from %s: %r"
     assert patched_err_log.call_args[0][1] == filename
@@ -254,6 +261,19 @@ def test_site_defaults_mixin(move_home_pypackage):
         opensite.write(json.dumps({"author": "you!"}))
     conf = Config()
     assert conf.author == "you!"
+
+
+def test_metadata_excludes_set_once():
+    """Ensure you can only add to _metadata_excludes once."""
+
+    conf = Config()
+    conf._metadata_exclusions.append("foo")
+    conf._metadata_exclusions.append("foo")
+    conf._metadata_exclusions.append("foo")
+    conf._metadata_exclusions.append("bar")
+    conf._metadata_exclusions.append("foo")
+    conf._metadata_exclusions.append("bar")
+    assert conf._metadata_exclusions == ["foo", "bar"]
 
 
 if __name__ == "__main__":

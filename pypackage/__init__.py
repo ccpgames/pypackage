@@ -62,9 +62,6 @@ def pypackage_setup(setup_py_commands=None, options=None, additional=""):
         with open(META_NAME, "w") as openfile:
             openfile.write(banner + json.dumps(config._metadata, indent=4))
 
-        del config
-        config = get_config()  # reload from metadata
-
     kwargs = config._as_kwargs
 
     with ManifestContext(config, options):   # write the MANIFEST.in

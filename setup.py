@@ -15,7 +15,7 @@ class PyTest(TestCommand):
 
         TestCommand.finalize_options(self)
         self.test_args = ["-v", "-rx", "--cov-report", "term-missing", "--cov",
-                          "pypackage"]
+                          "pypackage", "test"]
         self.test_suite = True
 
     def run_tests(self):
@@ -32,7 +32,7 @@ def long_description():
 
 setup(
     name="pypackage",
-    version="0.0.6",
+    version="0.0.7",
     author="Adam Talsma",
     author_email="se-adam.talsma@ccpgames.com",
     url="http://ccpgames.github.io/pypackage",

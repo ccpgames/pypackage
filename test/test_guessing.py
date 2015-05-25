@@ -4,12 +4,22 @@
 import os
 import sys
 import mock
+import time
 import pytest
+import random
 from collections import OrderedDict
 
 from pypackage import guessing
 from pypackage.config import Config
 from pypackage.cmdline import get_options
+
+
+def random_text(length):
+    """Returns a random lower-case string of len length."""
+
+    return "".join([
+        chr(random.sample(range(97, 123), 1)[0]) for _ in range(length)
+    ])
 
 
 def test_ignored_data_files(with_data):
@@ -80,6 +90,90 @@ def test_perform_guesswork__ignore(capfd, reset_sys_argv, move_home_pypackage):
     out, err = capfd.readouterr()
     assert "ignoring all guesses" in out
     assert not err
+
+
+def test_latest_git_tag(simple_package):
+    """If the project is under git control and has tags, return the newest."""
+
+    os.mkdir(".git")
+    os.mkdir(os.path.join(".git", "refs"))
+    os.mkdir(os.path.join(".git", "refs", "tags"))
+
+    for i in range(2):
+        if i:
+            time.sleep(1.1)
+
+        name = random_text(6)
+        contents = random_text(40)
+        with open(os.path.join(".git", "refs", "tags", name), "w") as opentag:
+            opentag.write(contents)
+
+    assert guessing.latest_git_tag() == name
+
+
+@pytest.fixture
+def find_in_files_setup(simple_package):
+    """Writes user data to simple_package's __init__.py."""
+
+    pkg_name = os.path.basename(simple_package)
+    pkg_root = os.path.join(simple_package, pkg_name)
+    with open(os.path.join(pkg_root, "__init__.py"), "w") as openinit:
+        openinit.write("\n".join([
+            "__author__ = 'mike tyson'",
+            "__email__ = 'iron@mike.com'",
+            '_version_ = "1.0.0-final"',
+            "maintainer = 'don king'",
+            "maintainer_email = 'don@king.com'",
+        ]))
+
+    return simple_package, pkg_root
+
+
+def find_in_files_asserts(results):
+    """Assert the result set contains the setup information."""
+
+    assert results["author"] == "mike tyson"
+    assert results["author_email"] == "iron@mike.com"
+    assert results["version"] == "1.0.0-final"
+    assert results["maintainer"] == "don king"
+    assert results["maintainer_email"] == "don@king.com"
+
+
+def test_find_in_files(find_in_files_setup):
+    """Write some attribute data to package files and find them."""
+
+    find_in_files_asserts(guessing.find_in_files())
+
+
+def test_find_in_files__ignored_dir(find_in_files_setup):
+    """Ensure data is not considered from ignored directories."""
+
+    ignored_dir = os.path.join(find_in_files_setup[0], "other-pkg.egg")
+    os.mkdir(ignored_dir)
+    with open(os.path.join(ignored_dir, "__init__.py"), "w") as openinit:
+        openinit.write("\n".join([
+            "__author__ = 'mohammad ali'",
+            "__email__ = 'mo@ali.com'",
+            '__version__ = "2.0.0-beta"',
+        ]))
+
+    find_in_files_asserts(guessing.find_in_files())
+
+
+def test_find_in_files__file_too_large(find_in_files_setup):
+    """Ensure files that are too large are ignored."""
+
+    # if this file isn't ignored for size, it'll have a higher weight than
+    # the data in __init__.py. it's also just over the limit for size
+    version_file = os.path.join(find_in_files_setup[1], "__version__.py")
+    rng_text = lambda x: "".join([chr])
+
+    with open(version_file, "w") as openversionfile:
+        openversionfile.write("__author__ = 'bob'\n")
+        for _ in range(100):
+            openversionfile.write("{}\n".format(random_text(1024)))
+
+    find_in_files_asserts(guessing.find_in_files())
 
 
 if __name__ == "__main__":

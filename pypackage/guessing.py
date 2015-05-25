@@ -3,6 +3,7 @@
 
 import os
 import re
+from collections import namedtuple
 from collections import OrderedDict
 
 from .constants import INPUT
@@ -56,6 +57,104 @@ def potential_data_files(scripts):
                     potential_files.append(relative_path)
 
     return potential_files
+
+
+def latest_git_tag():
+    """Returns the latest tag from git, if .git exists."""
+
+    def git_tag_refs(file_=""):
+        return os.path.join(".git", "refs", "tags", file_)
+
+    try:
+        git_tags = os.listdir(git_tag_refs())
+    except OSError:
+        return None
+
+    latest_tag = {0: None}
+    for tag in git_tags:
+        latest_tag[os.stat(git_tag_refs(tag)).st_ctime] = tag
+
+    return latest_tag[max(latest_tag)]
+
+
+def find_in_files():
+    """Look through most files to try to determine the version and author.
+
+    Returns:
+        OrderedDict with the some/all of the following keys if found::
+
+            version, author, author_email, maintainer, maintainer_email
+    """
+
+    Guess = namedtuple("Guess", ("source", "weight", "guess"))
+    Pattern = namedtuple("Pattern", ("name", "weight", "pattern"))
+
+    git_tag = latest_git_tag()
+    versions = [Guess("git tag", 99 * (git_tag is not None), git_tag)]
+
+    authors = []
+    emails = []
+    maintainers = []
+    maintainer_emails = []
+
+    to_find = {
+        "version": versions,
+        "author": authors,
+        "email": emails,
+        "author_email": emails,
+        "maintainer": maintainers,
+        "maintainer_email": maintainer_emails,
+    }
+
+    file_weights = {  # additional to the pattern weights
+        "__init__.py": 100,
+        "__version__.py": 125,
+        "version.py": 75,
+    }
+
+    for root, directories, files in os.walk(os.curdir):
+
+        if _ignored(root, is_file=False):
+            continue
+
+        for file_ in files:
+            file_path = os.path.join(root, file_)
+            # ignore large files, allows us to be faster with regex's/reading
+            if os.stat(file_path).st_size > 102400:
+                continue
+
+            with open(file_path, "r") as openfile:
+                content = openfile.read()
+
+            for name, guesses in to_find.items():
+                for i in range(3):
+                    pattern = r'^{u_}{name}{u_} = [\'"]([^\'"]*)[\'"]'.format(
+                        u_="_" * i,
+                        name=name,
+                    )
+
+                    re_match = re.search(pattern, content, re.M)
+                    if re_match:
+                        match_weight = 25 * (i + 1)  # more _ == more important
+                        if file_ in file_weights:
+                            match_weight += file_weights[file_]
+
+                        guesses.append(Guess(
+                            "{u_}{name}{u_} from file {fname}".format(
+                                u_="_" * i,
+                                name=name,
+                                fname=file_path,
+                            ),
+                            match_weight,
+                            re_match.group(1)
+                        ))
+                        break
+
+    to_find.pop("email")  # duplicated to match either email or author_email
+    return OrderedDict(
+        (name, max(guesses, key=lambda x: x.weight).guess) for name, guesses in
+            to_find.items() if guesses
+    )
 
 
 def _ignored(file_or_dir, is_file=True, _recurse=False):
@@ -126,20 +225,25 @@ def _guess_at_things(config):
         OrderedDict of {attribute: guess}
     """
 
-    guesses = OrderedDict([
-        ("name", os.path.basename(os.path.realpath(os.path.curdir))),
-        ("py_modules", python_modules()),
-    ])
+    guesses = OrderedDict(
+        name=os.path.basename(os.path.realpath(os.path.curdir))
+    )
+    guesses.update(find_in_files())
+
+    py_modules = python_modules()
+    if py_modules:
+        guesses["py_modules"] = py_modules
 
     scripts = []
-    for potential in ["scripts", "bin"]:
+    for potential in ("scripts", "bin"):
         root = os.path.join(os.path.abspath(os.curdir), potential)
         if os.path.isdir(root):
             for file_ in os.listdir(root):
                 if os.access(os.path.join(root, file_), os.X_OK):
                     scripts.append(os.path.join(potential, file_))
 
-    guesses["scripts"] = scripts
+    if scripts:
+        guesses["scripts"] = scripts
 
     package_files = potential_data_files(scripts)
     if package_files:
@@ -194,14 +298,15 @@ def perform_guesswork(config, options):
                 guesses[from_user] = None
                 print("{} will not be guessed".format(from_user))
 
-    for atr in ("name", "scripts", "py_modules", "package_data"):
-        if (not hasattr(config, atr) or options.re_probe) and guesses.get(atr):
-            if atr == "package_data":  # set the name as late as possible
-                setattr(config, atr, {
-                    getattr(config, "name", guesses["name"]): guesses[atr]
+    for attr in guesses:
+        if (not hasattr(config, attr) or options.re_probe) and guesses[attr]:
+            config._metadata_exclusions.append(attr)
+            if attr == "package_data":  # set the name as late as possible
+                setattr(config, attr, {
+                    getattr(config, "name", guesses["name"]): guesses[attr]
                 })
             else:
-                setattr(config, atr, guesses[atr])
+                setattr(config, attr, guesses[attr])
 
     if getattr(config, "package_data", None) and \
             not getattr(config, "include_package_data", None):

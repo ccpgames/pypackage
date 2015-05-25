@@ -4,7 +4,7 @@
 # This script will create a new venv and install pypackage inside it.
 # It then creates three example packages, all inside a new example
 # directory. The hello-world package should be installed, the tested_mod and
-# tested_pkg packages should only be tested and built. The has_data package
+# detected_pkg packages should only be tested and built. The has_data package
 # should also be installed and should have a script entry point of `read_data`
 # which should dump 100B of static random data to stdout.
 #
@@ -90,18 +90,22 @@ ls -lh dist
 cd ..
 
 #
-# Create tested_pkg
+# Create detected_pkg
 #
 
 # create the directories
-mkdir tested_pkg
-cd tested_pkg
-mkdir tested_pkg
+mkdir detected_pkg
+cd detected_pkg
+mkdir detected_pkg
 mkdir tests
 
 # write the package files
-cd tested_pkg
-touch __init__.py
+cd detected_pkg
+cat <<EOF > __init__.py
+__version__ = "0.0.1"
+__author__ = "joe blow"
+__email__ = "joe@hotmail.com"
+EOF
 cat <<EOF > some_mod.py
 def is_true():
     return True
@@ -114,7 +118,7 @@ cd ..
 cd tests
 cat <<EOF > test_some_mod.py
 import pytest
-from tested_pkg import some_mod
+from detected_pkg import some_mod
 
 def test_is_true():
     assert some_mod.is_true()
@@ -126,8 +130,7 @@ cd ..
 
 # write the pypackage.meta
 cat <<EOF > pypackage.meta
-# we only have to supply packages here because we have test in our name
-{"test_runner": "pytest", "packages": "tested_pkg", "version": "1.0.0"}
+{"test_runner": "pytest"}
 EOF
 
 # run tests

@@ -30,6 +30,13 @@ class UNDEF(object):
     pass
 
 
+class SetOnce(list):
+    """Subclass list to have append only append if the value is not in list."""
+    def append(self, value):
+        if value not in self:
+            super(SetOnce, self).append(value)
+
+
 class Config(object):
     """Config object. Attributes are passed as kwargs."""
 
@@ -117,6 +124,7 @@ class Config(object):
         # _verify will toggle these if set
         self._configured_runner_args = False
         self._configured_tests_require = False
+        self._metadata_exclusions = SetOnce()
 
         # perform init-time type validation and runs feature functions
         self._verify()
@@ -148,7 +156,6 @@ class Config(object):
 
         return kwargs
 
-
     @property
     def _metadata(self):
         """Metadata unique to this config."""
@@ -159,6 +166,9 @@ class Config(object):
         metadata.pop("cmdclass", None)
         if not self._configured_tests_require:
             metadata.pop("tests_require", None)
+
+        for key in self._metadata_exclusions:
+            metadata.pop(key, None)
 
         for attr in Config._PYPACKAGE_KEYS:
             if hasattr(self, attr):
@@ -501,7 +511,7 @@ def site_defaults():
     if os.path.isfile(filename):
         return json_maybe_commented(filename) or {}
     else:
-        logging.warn("Site defaults requested but not found at %s", filename)
+        logging.debug("Site defaults requested but not found at %s", filename)
         return {}
 
 
@@ -524,7 +534,7 @@ def get_config(path=None):
     if os.path.isfile(pyjson):
         return Config(**json_maybe_commented(pyjson))
     else:
-        logging.warn("Using site defaults, no %s found in %s", META_NAME, path)
+        logging.info("Using site defaults, no %s found in %s", META_NAME, path)
         return Config(**site_defaults())
 
 
