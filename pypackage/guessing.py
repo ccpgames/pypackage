@@ -97,14 +97,14 @@ def find_in_files():
     maintainers = []
     maintainer_emails = []
 
-    to_find = {
-        "version": versions,
-        "author": authors,
-        "email": emails,
-        "author_email": emails,
-        "maintainer": maintainers,
-        "maintainer_email": maintainer_emails,
-    }
+    to_find = OrderedDict([
+        ("version", versions),
+        ("author", authors),
+        ("email", emails),
+        ("author_email", emails),
+        ("maintainer", maintainers),
+        ("maintainer_email", maintainer_emails),
+    ])
 
     file_weights = {  # additional to the pattern weights
         "__init__.py": 100,
