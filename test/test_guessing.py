@@ -180,7 +180,6 @@ def test_find_in_files__file_too_large(find_in_files_setup):
     # if this file isn't ignored for size, it'll have a higher weight than
     # the data in __init__.py. it's also just over the limit for size
     version_file = os.path.join(find_in_files_setup[1], "__version__.py")
-    rng_text = lambda x: "".join([chr])
 
     with open(version_file, "w") as openversionfile:
         openversionfile.write("__author__ = 'bob'\n")
