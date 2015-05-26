@@ -560,7 +560,7 @@ def json_maybe_commented(filename, remove_comments=False):
     if remove_comments:
         cleaned_lines = []
         with open(filename, "r") as openfile:
-            for line in openfile.readlines():
+            for line in openfile:
                 if not re.match("\s*#", line):  # leading whitespace then #
                     cleaned_lines.append(line)
         try:
