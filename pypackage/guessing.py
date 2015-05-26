@@ -132,8 +132,8 @@ def find_in_files():
 
             for name, guesses in to_find.items():
                 for i in range(3):
-                    pattern = r'^{u_}{name}{u_} = [\'"]([^\'"]*)[\'"]'.format(
-                        u_="_" * i,
+                    pattern = r'^{u}{name}{u} *= *[\'"]([^\'"]*)[\'"]'.format(
+                        u="_" * i,
                         name=name,
                     )
 

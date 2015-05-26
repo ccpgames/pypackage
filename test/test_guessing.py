@@ -120,9 +120,9 @@ def find_in_files_setup(simple_package):
     pkg_root = os.path.join(simple_package, pkg_name)
     with open(os.path.join(pkg_root, "__init__.py"), "w") as openinit:
         openinit.write("\n".join([
-            "__author__ = 'mike tyson'",
-            "__email__ = 'iron@mike.com'",
-            '_version_ = "1.0.0-final"',
+            "__author__='mike tyson'",
+            "__email__  =  'iron@mike.com'",
+            '_version_=    "1.0.0-final"',
             "maintainer = 'don king'",
             "maintainer_email = 'don@king.com'",
         ]))
