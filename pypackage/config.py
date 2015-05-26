@@ -506,7 +506,10 @@ def ensure_dict(dict_to_verify, dict_types):
         if not isinstance(key, key_type):
             key = key_type(key)  # this will raise on error...
         if not isinstance(value, value_type):
-            value = value_type(value)  # this will also raise on error...
+            if value_type is list and isinstance(key, STRING_TYPE):
+                value = [value]  # auto list single string values
+            else:
+                value = value_type(value)  # this will also raise on error...
         return_dict[key] = value
     return return_dict
 

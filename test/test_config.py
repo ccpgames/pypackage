@@ -281,7 +281,7 @@ def test_extras_require_mixin():
 
     conf = Config(
         extras_require={"my_thing": ["foo"]},
-        feature_x_requires=["bar"],
+        feature_x_requires="bar",
     )
     assert conf.extras_require == {"my_thing": ["foo"], "feature_x": ["bar"]}
 

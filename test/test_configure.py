@@ -65,7 +65,7 @@ def test_value_in_config__invalid_try_again():
         "ask_for_value",
         side_effect=iter([
             "{'what': 12.3",     # malformed input
-            "{'what': 1.2}",     # valid input, but not for the spec
+            "{'what': 1 / 4}",   # valid input, but not for the spec
             "{'what': ['ok']}",  # valid input
         ])
     )
@@ -73,6 +73,31 @@ def test_value_in_config__invalid_try_again():
         configure.set_value_in_config("entry_points", conf, conf._KEYS)
 
     assert conf.entry_points == {"what": ["ok"]}
+
+
+def test_invalid__feedback(capfd):
+    """The user should receive some feedback when the value doesn't coerce."""
+
+    class Obj(object):
+        def __init__(self):
+            self.str_count = 0
+
+        def __str__(self):
+            self.str_count += 1
+            if self.str_count == 1:
+                raise IOError
+            else:
+                return "test object"
+
+    conf = Config(name="foo")
+
+    with mock.patch.object(configure, "coerce_to_expected", return_value=Obj()):
+        with mock.patch.object(configure, "ask_for_value"):
+            configure.set_value_in_config("name", conf, conf._KEYS)
+
+    out, err = capfd.readouterr()
+    assert "name as test object failed to verify. should be str" in err
+    assert "name set to: 'test object'\n" == out
 
 
 @pytest.mark.parametrize("value", (None, False, 0, ""))

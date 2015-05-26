@@ -1,7 +1,10 @@
 """Functions and helpers for configuring a config.Config object."""
 
 
+from __future__ import print_function
+
 import ast
+import sys
 from pprint import pformat
 
 from .constants import INPUT
@@ -38,8 +41,8 @@ def handle_classifiers(config):  # pragma: no cover
     try:
         from .classified import choose_classifiers
     except Exception as error:
-        print(error)
-        print("Could not load classifiers selector")
+        print(error, file=sys.stderr)
+        print("Could not load classifiers selector", file=sys.stderr)
     else:
         return choose_classifiers(config)
 
@@ -65,19 +68,19 @@ def set_value_in_config(key, config, keys):
     try:
         user_val = coerce_to_expected(user_val, key, keys[key])
     except Exception as error:
-        print(error)
+        print(error, file=sys.stderr)
         return set_value_in_config(key, config, keys)
 
-    if user_val is not None:
+    if user_val:
         setattr(config, key, user_val)
 
         try:
             config._verify()
         except Exception as error:
-            print(error)
+            print(error, file=sys.stderr)
             print("{} as {} failed to verify. should be {}".format(
-                key, getattr(config, key), repr(keys[key])
-            ))
+                key, getattr(config, key), keys[key].__name__
+            ), file=sys.stderr)
             delattr(config, key)  # unset the failed to verify value
             return set_value_in_config(key, config, keys)
         else:

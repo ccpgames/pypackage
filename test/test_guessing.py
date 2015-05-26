@@ -109,7 +109,7 @@ def test_latest_git_tag(simple_package):
         with open(os.path.join(".git", "refs", "tags", name), "w") as opentag:
             opentag.write(contents)
 
-    assert guessing.latest_git_tag() == name
+    assert guessing.find_in_files()["version"] == name
 
 
 @pytest.fixture

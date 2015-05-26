@@ -90,13 +90,15 @@ def find_in_files():
     Guess = namedtuple("Guess", ("source", "weight", "guess"))
     Pattern = namedtuple("Pattern", ("name", "weight", "pattern"))
 
-    git_tag = latest_git_tag()
-    versions = [Guess("git tag", 99 * (git_tag is not None), git_tag)]
-
+    versions = []
     authors = []
     emails = []
     maintainers = []
     maintainer_emails = []
+
+    git_tag = latest_git_tag()
+    if git_tag:
+        versions.append(Guess("git tag", 99, git_tag))
 
     to_find = OrderedDict([
         ("version", versions),
