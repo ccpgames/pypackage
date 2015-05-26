@@ -184,6 +184,8 @@ def _ignored(file_or_dir, is_file=True, _recurse=False):
     ignored_file_patterns = [
         r".*\.pyc$",
         r".*\.py$",  # These will be found as part of a package
+        r"README.*",
+        r"LICENSE.*",
     ]
 
     ignored_dirs = [
@@ -193,6 +195,7 @@ def _ignored(file_or_dir, is_file=True, _recurse=False):
         ".git",
         ".svn",
         ".eggs",
+        "EGG-INFO",
     ]
 
     ignored_dir_patterns = [
@@ -215,7 +218,7 @@ def _ignored(file_or_dir, is_file=True, _recurse=False):
 
     patterns = ignored_dir_patterns if _recurse else ignored_file_patterns
     for pattern in patterns:
-        if re.match(pattern, file_or_dir):
+        if re.match(pattern, file_or_dir, re.I):
             return True
 
     return False
