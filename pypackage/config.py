@@ -14,7 +14,7 @@ import logging
 import unittest
 from pprint import pformat
 from collections import OrderedDict
-from setuptools import find_packages
+from setuptools import find_packages  # nopep8
 
 from .runner import TestRunner
 from .runner import NOSE_TEMPLATE
@@ -144,7 +144,7 @@ class Config(object):
                 if key == "packages":
                     for package in self.packages:
                         if package.startswith("find_packages(") and \
-                                not ";" in package and not "." in package:
+                                ";" not in package and "." not in package:
                             # no ;'s or .'s here to reduce attack surface
                             try:
                                 found_packages = eval(package)

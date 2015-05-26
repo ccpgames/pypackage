@@ -78,7 +78,7 @@ def test_value_in_config__invalid_try_again():
 def test_invalid__feedback(capfd):
     """The user should receive some feedback when the value doesn't coerce."""
 
-    class Obj(object):
+    class TestObject(object):
         def __init__(self):
             self.str_count = 0
 
@@ -90,9 +90,14 @@ def test_invalid__feedback(capfd):
                 return "test object"
 
     conf = Config(name="foo")
+    coerce_patch = mock.patch.object(
+        configure,
+        "coerce_to_expected",
+        return_value=TestObject(),
+    )
 
-    with mock.patch.object(configure, "coerce_to_expected", return_value=Obj()):
-        with mock.patch.object(configure, "ask_for_value"):
+    with mock.patch.object(configure, "ask_for_value"):
+        with coerce_patch:
             configure.set_value_in_config("name", conf, conf._KEYS)
 
     out, err = capfd.readouterr()

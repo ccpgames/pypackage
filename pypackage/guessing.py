@@ -88,7 +88,6 @@ def find_in_files():
     """
 
     Guess = namedtuple("Guess", ("source", "weight", "guess"))
-    Pattern = namedtuple("Pattern", ("name", "weight", "pattern"))
 
     versions = []
     authors = []
@@ -157,10 +156,8 @@ def find_in_files():
                         break
 
     to_find.pop("email")  # duplicated to match either email or author_email
-    return OrderedDict(
-        (name, max(guesses, key=lambda x: x.weight).guess) for name, guesses in
-            to_find.items() if guesses
-    )
+    return OrderedDict((name, max(guesses, key=lambda x: x.weight).guess) for
+                       name, guesses in to_find.items() if guesses)
 
 
 def _ignored(file_or_dir, is_file=True, _recurse=False):

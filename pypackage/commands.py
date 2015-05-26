@@ -6,7 +6,6 @@ Setup is a bit of a snowflake in that it doesn't build anything, takes no args.
 """
 
 
-import os
 import sys
 
 from . import pypackage_setup

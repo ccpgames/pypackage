@@ -3,7 +3,6 @@
 
 import json
 import mock
-import codecs
 import pytest
 import tempfile
 
@@ -213,7 +212,7 @@ def test_multiline():
     """Ensure the proper formatting for multiline pprint formats."""
 
     blurb = "really long string that will require multiple lines"
-    blurber = lambda x : "{}-{}".format(blurb, x)
+    blurber = lambda x: "{}-{}".format(blurb, x)
     value = [blurber(i) for i in range(5)]
     assert config._multiline(value) == """[
         'really long string that will require multiple lines-0',
@@ -240,13 +239,11 @@ def test_json_loading__failure():
     assert patched_err_log.call_count == 1
 
 
-@pytest.mark.parametrize("original, alias",
-    [
-        ("author", "maintainer"),
-        ("author_email", "maintainer_email"),
-        ("description", "long_description"),
-    ]
-)
+@pytest.mark.parametrize("original, alias", [
+    ("author", "maintainer"),
+    ("author_email", "maintainer_email"),
+    ("description", "long_description"),
+])
 def test_default_fillins(original, alias):
     """pypackage maps a few attributes to aliases if 1/2 is supplied."""
 

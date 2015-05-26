@@ -44,7 +44,9 @@ def verify_source(source_files, gz_path):
     with tarfile.open(f_name, "r:gz") as tar_file:
         tar_files = tar_file.getnames()
 
-    pkg_full_name = os.path.basename(os.path.dirname(gz_path)).split(".tar.gz")[0]
+    pkg_full_name = os.path.basename(
+        os.path.dirname(gz_path)
+    ).split(".tar.gz")[0]
     egg_name = "{}.egg-info".format(pkg_full_name.rsplit("-")[0])  # fragile..
     source_files.extend([
         "PKG-INFO",
