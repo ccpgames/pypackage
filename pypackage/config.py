@@ -95,8 +95,7 @@ class Config(object):
         config_as_dict.update({key: UNDEF() for key in Config._PYPACKAGE_KEYS})
         self._defaults = site_defaults()
         config_as_dict.update(self._defaults)
-        for key, value in kwargs.items():
-            config_as_dict[key] = value
+        config_as_dict.update(kwargs)
 
         extras = {}
         for key, value in config_as_dict.items():
@@ -107,7 +106,10 @@ class Config(object):
                     setattr(self, key, value)
 
         if extras:
-            self.extras_require = extras
+            if hasattr(self, "extras_require"):
+                self.extras_require.update(extras)
+            else:
+                self.extras_require = extras
 
         # duplicate in some values
         duplicate_values = [
@@ -124,6 +126,8 @@ class Config(object):
         # _verify will toggle these if set
         self._configured_runner_args = False
         self._configured_tests_require = False
+
+        # filled in during guessing phase
         self._metadata_exclusions = SetOnce()
 
         # perform init-time type validation and runs feature functions
@@ -162,18 +166,21 @@ class Config(object):
 
         metadata = OrderedDict([(k, v) for k, v in self._as_kwargs.items()
                                 if k not in self._defaults])
-        # remove the cmdclass key and add in our feature keys
+        # remove the cmdclass key and tests_require if not set by the user
         metadata.pop("cmdclass", None)
         if not self._configured_tests_require:
             metadata.pop("tests_require", None)
 
+        # remove anything that's been guessed
         for key in self._metadata_exclusions:
             metadata.pop(key, None)
 
+        # add in feature keys that have been set
         for attr in Config._PYPACKAGE_KEYS:
             if hasattr(self, attr):
                 if attr != "runner_args" or self._configured_runner_args:
                     metadata[attr] = getattr(self, attr)
+
         return metadata
 
     def __str__(self):

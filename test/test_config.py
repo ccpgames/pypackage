@@ -276,5 +276,15 @@ def test_metadata_excludes_set_once():
     assert conf._metadata_exclusions == ["foo", "bar"]
 
 
+def test_extras_require_mixin():
+    """Ensure you can provide both extras_require and X_requires."""
+
+    conf = Config(
+        extras_require={"my_thing": ["foo"]},
+        feature_x_requires=["bar"],
+    )
+    assert conf.extras_require == {"my_thing": ["foo"], "feature_x": ["bar"]}
+
+
 if __name__ == "__main__":
     pytest.main(["-rx", "-v", "--pdb", __file__])
