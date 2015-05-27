@@ -102,10 +102,15 @@ mkdir tests
 # write the package files
 cd detected_pkg
 cat <<EOF > __init__.py
+# coding: utf-8
+
+from __future__ import unicode_literals
+
 __version__ = "0.0.1"
 __author__ = "joe blow"
-__email__ = "joe@hotmail.com"
+__email__ = "jðe@hotmail.com"
 EOF
+
 cat <<EOF > some_mod.py
 def is_true():
     return True

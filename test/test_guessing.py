@@ -1,6 +1,10 @@
+# coding: utf-8
 """Tests for pypackages' guessing features."""
 
 
+from __future__ import unicode_literals
+
+import io
 import os
 import sys
 import mock
@@ -93,6 +97,24 @@ def test_perform_guesswork__ignore(capfd, reset_sys_argv, move_home_pypackage):
     assert not err
 
 
+@pytest.mark.parametrize(
+    "side_effect",
+    (KeyboardInterrupt, EOFError),
+    ids=("^C", "^D"),
+)
+def test_perform_guesswork__interrupts(reset_sys_argv, side_effect):
+    """Ensure the user can cleanly exit the interactive session."""
+
+    sys.argv = ["py-build", "-siR"]
+    guesses = {"fake": True}
+    with mock.patch.object(guessing, "_guess_at_things", return_value=guesses):
+        with mock.patch.object(guessing, "INPUT", side_effect=side_effect):
+            with pytest.raises(SystemExit) as error:
+                guessing.perform_guesswork(Config(), get_options())
+
+    assert error.value.args[0] == "\nInterrupted"
+
+
 def test_latest_git_tag(simple_package):
     """If the project is under git control and has tags, return the newest."""
 
@@ -118,14 +140,15 @@ def find_in_files_setup(simple_package):
 
     pkg_name = os.path.basename(simple_package)
     pkg_root = os.path.join(simple_package, pkg_name)
-    with open(os.path.join(pkg_root, "__init__.py"), "w") as openinit:
-        openinit.write("\n".join([
-            "__author__='mike tyson'",
-            "__email__  =  'iron@mike.com'",
-            '_version_=    "1.0.0-final"',
-            "maintainer = 'don king'",
-            "maintainer_email = 'don@king.com'",
-        ]))
+    init_file = os.path.join(pkg_root, "__init__.py")
+    with io.open(init_file, "w", encoding="utf-8") as openinit:
+        openinit.writelines([
+            "__author__='mike tyson'\n",
+            "__email__  =  'irðn@mike.com'\n",
+            '_version_=    "1.0.0-final"\n',
+            "maintainer = 'don king'\n",
+            "maintainer_email = 'don@king.com'\n",
+        ])
 
     return simple_package, pkg_root
 
@@ -134,7 +157,7 @@ def find_in_files_asserts(results):
     """Assert the result set contains the setup information."""
 
     assert results["author"] == "mike tyson"
-    assert results["author_email"] == "iron@mike.com"
+    assert results["author_email"] == "irðn@mike.com"
     assert results["version"] == "1.0.0-final"
     assert results["maintainer"] == "don king"
     assert results["maintainer_email"] == "don@king.com"

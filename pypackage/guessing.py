@@ -1,5 +1,8 @@
+# coding: utf-8
 """Functions and helpers related to guessing configuration attributes."""
 
+
+from __future__ import unicode_literals
 
 import os
 import re
@@ -144,6 +147,13 @@ def find_in_files():
                         if file_ in file_weights:
                             match_weight += file_weights[file_]
 
+                        guess = re_match.group(1)
+                        try:
+                            # try to use an ascii string if possible
+                            guess = str(codecs.encode(guess, "ascii").decode())
+                        except UnicodeEncodeError:
+                            pass
+
                         guesses.append(Guess(
                             "{u_}{name}{u_} from file {fname}".format(
                                 u_="_" * i,
@@ -151,7 +161,7 @@ def find_in_files():
                                 fname=file_path,
                             ),
                             match_weight,
-                            re_match.group(1)
+                            guess,
                         ))
                         break
 
@@ -278,7 +288,7 @@ def perform_guesswork(config, options):
             "pypackage has guessed the following attributes:\n{}\n"
             "would you like to disregard any of the above guesses?"
         ).format(
-            "\n".join(["{} `{}` = {!r:}".format(
+            "\n".join(['{} `{}` = "{}"'.format(
                 index,
                 attr,
                 guesses[attr]
@@ -288,7 +298,10 @@ def perform_guesswork(config, options):
         query = 'use 1-{} or "all" to ignore (enter to accept): '.format(len_g)
         from_user = True
         while from_user and any([guesses[key] for key in guesses]):
-            from_user = INPUT(query)
+            try:
+                from_user = INPUT(query)
+            except (EOFError, KeyboardInterrupt):
+                raise SystemExit("\nInterrupted")
             try:
                 from_user = int(from_user)
                 assert 1 <= from_user <= len_g  # no negatives, inside len_g
