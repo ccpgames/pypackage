@@ -224,7 +224,6 @@ class BoxSelector(object):  # pragma: no cover
                 self.stdscr.nodelay(False)
                 if n_seq == -1:
                     # Escape was pressed, check if the top option has .. in it
-                    # import pdb; pdb.set_trace()
                     if ".." in str(windows[0].instr(1, 0)):
                         return 0  # backs up a level
                     else:
@@ -255,7 +254,6 @@ def _ensure_chain(top_level, sub_categories):
 def read_classifiers():
     """Reads the trove file and returns a Classifier representing all."""
 
-    # TODO: get file from https://pypi.python.org/pypi?:action=list_classifiers
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
               "classifiers")) as openc:
         classifiers = [c.strip() for c in openc.read().splitlines() if c]

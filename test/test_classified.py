@@ -4,6 +4,7 @@
 import os
 import mock
 import pytest
+import requests
 
 from pypackage.config import Config
 
@@ -14,7 +15,10 @@ except ImportError:
     HAS_CURSES = False
 
 
-@pytest.mark.skipif(not HAS_CURSES, reason="no curses support")
+# this skips all tests in this module if the client doesn't have curses
+pytestmark = pytest.mark.skipif(not HAS_CURSES, reason="no curses support")
+
+
 def test_choose_classifiers(reset_sys_argv, simple_module):
     """Verify the logic in choosing classifiers."""
 
@@ -31,7 +35,6 @@ def test_choose_classifiers(reset_sys_argv, simple_module):
     assert "ESCDELAY" not in os.environ
 
 
-@pytest.mark.skipif(not HAS_CURSES, reason="no curses support")
 def test_old_escdelay_persists(reset_sys_argv, simple_module):
     """Ensure any previously existing ESCDELAY envvar is reset on exit."""
 
@@ -47,7 +50,6 @@ def test_old_escdelay_persists(reset_sys_argv, simple_module):
     assert os.environ["ESCDELAY"] == "100"
 
 
-@pytest.mark.skipif(not HAS_CURSES, reason="no curses support")
 def test_back_it_up():
     """Ensure we navigate the quasi singly linked list correctly."""
 
@@ -55,6 +57,26 @@ def test_back_it_up():
     parent = all_classifiers.classifiers[8].classifiers[2]
     child = parent.classifiers[1]
     assert classified.back_it_up(child, all_classifiers) == parent
+
+
+def test_classifiers_current():
+    """Ensure the shipped classifiers file is synced with pypi."""
+
+    packaged_trove_file = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "pypackage",
+        "classifiers"
+    )
+
+    with open(packaged_trove_file) as opent:
+        packaged_troves = [t.strip() for t in opent.read().splitlines() if t]
+
+    trove_req = requests.get(
+        "https://pypi.python.org/pypi?:action=list_classifiers").text
+
+    current_troves = [t.strip() for t in trove_req.splitlines() if t]
+
+    assert packaged_troves == current_troves
 
 
 if __name__ == "__main__":

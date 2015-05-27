@@ -42,7 +42,7 @@ class TestRunner(TestCommand):  # pragma: no cover
         raise SystemExit(errno)
 
 
-# for the setup.py; used in config outputting for pytest and nose
+# for the setup.py; used in config outputting
 _TEMPLATE = '''\
 from setuptools.command.test import test as TestCommand
 

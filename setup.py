@@ -50,7 +50,7 @@ setup(
         "PyYAML     >= 3.0",
     ],
     cmdclass={"test": PyTest},
-    tests_require=["mock", "pytest", "pytest-cov"],
+    tests_require=["mock", "pytest", "pytest-cov", "requests"],
     entry_points={"console_scripts": [
         "py-build   = pypackage.commands:build",
         "py-develop = pypackage.commands:develop",
