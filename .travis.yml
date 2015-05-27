@@ -25,6 +25,7 @@ deploy:
     on:
       tags: true
       repo: ccpgames/pypackage
+      condition: $TOXENV = py34
   - provider: releases
     api_key:
       secure: "sPKGWze1gfiBWDTWdEhaeYdvMpvw014OhZ8n/+txTtnmhUVO/xK/nS/QXJg8V5r7Q1P0/fsuVY3F8JKMwNSuVBa67kNDeU3sELh6lEaN5A4ajeZQutUBNRpJjYG3td2IGB2QyahcJC3dhVTRpP/0X9w7ktFFNFxOgfMg1UIctUW5m1dDfqZ/Ncio8XFGcWOvmjpvzjNqhw5cpBuMNtkcY6QgVDKSJTPVuYqYfejLf8oXx2o94YO029v+QrXHEiaQUbt+8PrkM0QpKrY+0tg0rqGq4yLGdEXeCuJj0zRX3txNPoirqpYAEmLAuVnN5r0n3rj4IF9rw5e1mnvNJDmY7yVuUnzk+2YFLhlWUKDsjHGEbtyP9fT01tvtvvZr1z5661SgPDONdVsajmt1dMfAINgDZuxw1C/s3SozOreL0ZUrb3Oz5il2bfDNPLd1hMOIL7aSybKl+CvyKpdoBSpFYQQxUsT76f8r6asaFnpiiq/2QPK9BbKeHNiZCQYLz1ZtMfAtXHnYA9kxmp5wf7iNhdLkfk3h281a88JyN52Dyi2bZXjCwjntvaMZWquAHvKRMMSQcOh+fxvlmyGweGxaAmRbcBfgi8nZt3vJ2E2HgyNY5MWXBh3GpEBchmeumUT0rFAntnKfciHUPhIujx3Z5Z6qrj23sNEaerzjUxg/b/k="
@@ -33,3 +34,4 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+      condition: $TOXENV = py34
