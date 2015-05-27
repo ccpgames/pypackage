@@ -30,9 +30,9 @@ Features
    inclusion in and writing of the MANIFEST.in
 -  support for three different testing frameworks (pytest, nose, and
    unittest) for use with ``setup.py test``
--  automatic script detection (any executable file in ./bin or
-   ./scripts)
--  automatic version, author, maintainer and email(s) detection (perfers __init__.py, __version__.py)
+-  automatic script detection (any executable file in ./bin or ./scripts)
+-  automatic version, author, maintainer and email(s) detection (perfers
+   __init__.py, __version__.py)
 -  curses front-end to python classifiers selection
 
 Example, "Hello World" application:
@@ -124,6 +124,33 @@ If your OS can run a bash script, execute ``demo.sh`` in the top level
 of this repo to create a new pypackage venv and some simple example
 packages in an ``example`` directory. From there feel free to play
 around and experiment with pypackage features and applications.
+
+
+Screenshots
+-----------
+
+The following screenshots were all taken with the ``detected_pkg`` package,
+which is created by the ``demo.sh`` script described in the further examples
+section above.
+
+Curses top level classifiers selection screen:
+
+.. image:: https://raw.githubusercontent.com/ccpgames/pypackage/gh-pages/images/top_level_post.png
+    :alt: top level classifiers
+    :align: center
+
+Curses development status screen with ``Beta`` selected:
+
+.. image:: https://raw.githubusercontent.com/ccpgames/pypackage/gh-pages/images/dev_status_post.png
+    :alt: development status classifiers
+    :align: center
+
+Interactive build process which used the above in it's classifiers selection:
+
+.. image:: https://raw.githubusercontent.com/ccpgames/pypackage/gh-pages/images/interactive_build_post.png
+    :alt: `py-build -si` interactive build session
+    :align: center
+
 
 Copyright and License
 =====================
