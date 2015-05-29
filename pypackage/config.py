@@ -528,8 +528,6 @@ def site_defaults():
 def get_config(path=None):
     """Looks in path or os.cwd for a static metadata file and builds a config.
 
-    Merges missing values from the DefaultConfig object
-
     Args:
         path: optional string path to search inside, or None for cwd
 
@@ -545,7 +543,7 @@ def get_config(path=None):
         return Config(**json_maybe_commented(pyjson))
     else:
         logging.info("Using site defaults, no %s found in %s", META_NAME, path)
-        return Config(**site_defaults())
+        return Config()
 
 
 def reduce_json_unicode(json_obj):
