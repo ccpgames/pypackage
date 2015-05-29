@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import io
 import os
 import re
 import copy
@@ -14,7 +15,7 @@ import logging
 import unittest
 from pprint import pformat
 from collections import OrderedDict
-from setuptools import find_packages  # nopep8
+from setuptools import find_packages
 
 from .runner import TestRunner
 from .runner import NOSE_TEMPLATE
@@ -126,6 +127,8 @@ class Config(object):
         # _verify will toggle these if set
         self._configured_runner_args = False
         self._configured_tests_require = False
+        self._long_description_read = ""
+        self._read_long_description = None
 
         # filled in during guessing phase
         self._metadata_exclusions = SetOnce()
@@ -155,8 +158,18 @@ class Config(object):
                                 break
                     else:
                         kwargs[key] = self.packages
+                elif key == "long_description":
+                    if self.long_description == "long_description":
+                        kwargs[key] = self._read_long_description
+                    else:
+                        kwargs[key] = self.long_description
                 else:
                     kwargs[key] = getattr(self, key)
+
+        if "packages" not in kwargs:
+            packages = find_packages(exclude=["test", "tests"])
+            if packages:
+                kwargs["packages"] = packages
 
         return kwargs
 
@@ -188,9 +201,16 @@ class Config(object):
 
         packages_str, find_needed = self._packages_string()
         cmdclass = self._cmdclass_string()
+        long_descr_str = self._long_description_string()
+
+        altered_keys = ("packages", "long_description", "cmdclass")
+        altered_strs = (packages_str, long_descr_str, cmdclass)
+
         imports = ["from setuptools import setup"]
         if find_needed:
             imports.append("from setuptools import find_packages")
+        if self._long_description_read:
+            imports.insert(0, "import io")
 
         return "\n".join([
             '"""{}\'s setup.py.\n'.format(
@@ -201,16 +221,28 @@ class Config(object):
             '"""\n\n',
             "\n".join(imports),
             self._test_runner_string() or "\n",
-            "setup(",
+            "{}setup(".format(self._long_description_read),
             "\n".join([
                 "    {}={},".format(key, _multiline(val)) for key, val in
-                self._as_kwargs.items() if key not in ("cmdclass", "packages")
+                self._as_kwargs.items() if key not in altered_keys
             ]),
-            "{}{})".format(
-                "    {},\n".format(packages_str) if packages_str else "",
-                "    {},\n".format(cmdclass) if cmdclass else "",
-            ),
+            "\n".join(
+                ["    {},".format(altered_str) for altered_str in altered_strs
+                    if altered_str]
+            ) or "",
+            ")",
         ])
+
+    def _long_description_string(self):
+        """Builds a string for long_description, using file read if used."""
+
+        if not hasattr(self, "long_description"):
+            return
+
+        if self.long_description == "long_description":
+            return "long_description=long_description"
+        else:
+            return "long_description={!r:}".format(self.long_description)
 
     def _test_runner_string(self):
         """Builds a string from the test_runner template, if in use."""
@@ -236,7 +268,7 @@ class Config(object):
         """
 
         # defaults
-        excludes = ["*.tests", "*.tests.*", "tests.*", "tests"]
+        excludes = ["test", "tests"]
         package_str = "find_packages(exclude={!r:})".format(excludes)
         find_required = True
 
@@ -276,6 +308,33 @@ class Config(object):
                  for attr in dir(self) if not attr.startswith("_")]
             ).format(self=self),
         )
+
+    def _enable_long_description_read(self):
+        """Sets up the automatic read feature of long_description.
+
+        Returns:
+            None, modifies attributes of self
+        """
+
+        if not hasattr(self, "long_description") or \
+           self.long_description == "long_description":
+            return
+
+        try:
+            if os.path.isfile(self.long_description):
+                self._long_description_read = (
+                    'with io.open("{}", encoding="utf-8") as opendescr:\n'
+                    "    long_description=opendescr.read()\n\n\n"
+                ).format(
+                    self.long_description
+                )
+                with io.open(self.long_description, encoding="utf-8") as descr:
+                    self._read_long_description = descr.read()
+                self.long_description = "long_description"
+            else:
+                return
+        except:
+            return
 
     def _enable_test_runner(self):
         """Sets up the preferred testing suite.
@@ -393,6 +452,7 @@ class Config(object):
         """Ensures self attributes conform to their type declarations."""
 
         self._enable_test_runner()
+        self._enable_long_description_read()
 
         for key, type_ in list(Config._KEYS.items()) + list(
                 Config._PYPACKAGE_KEYS.items()):

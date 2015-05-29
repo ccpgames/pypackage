@@ -194,8 +194,6 @@ def _ignored(file_or_dir, is_file=True, _recurse=False):
     ignored_file_patterns = [
         r".*\.pyc$",
         r".*\.py$",  # These will be found as part of a package
-        r"README.*",
-        r"LICENSE.*",
     ]
 
     ignored_dirs = [
