@@ -11,9 +11,9 @@ if sys.version_info > (3,):  # pragma: no cover
     STRING_TYPE = str
     CHECKMARK = chr(0x2713)
 else:  # pragma: no cover
-    INPUT = raw_input
-    STRING_TYPE = basestring
-    CHECKMARK = unichr(0x2713)
+    INPUT = raw_input           # nopep8
+    STRING_TYPE = basestring    # nopep8
+    CHECKMARK = unichr(0x2713)  # nopep8
 
 
 VERSION = "{} {}".format(
