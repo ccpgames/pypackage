@@ -32,7 +32,7 @@ def long_description():
 
 setup(
     name="pypackage",
-    version="0.1.2",
+    version="0.1.3",
     author="Adam Talsma",
     author_email="se-adam.talsma@ccpgames.com",
     url="http://ccpgames.github.io/pypackage",
@@ -67,6 +67,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Topic :: Software Development',
         'Topic :: Software Development :: Code Generators',
