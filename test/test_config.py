@@ -283,5 +283,25 @@ def test_extras_require_mixin():
     assert conf.extras_require == {"my_thing": ["foo"], "feature_x": ["bar"]}
 
 
+def test_as_kwargs_finds_packages():
+    """The _as_kwargs property should use find_packages."""
+
+    conf = Config()
+    with mock.patch.object(config, "find_packages", return_value=4) as patched:
+        conf_args = conf._as_kwargs
+
+    assert conf_args["packages"] == 4
+    patched.assert_called_once_with(exclude=["test", "tests"])
+
+
+def test_long_read_errors_buried(with_readme):
+    """Errors when trying to read long_description file should be buried."""
+
+    with mock.patch.object(config.io, "open", side_effect=OSError):
+        conf = config.get_config(with_readme[0])
+    assert not conf._long_read
+    assert not conf._long_read_in_setup
+
+
 if __name__ == "__main__":
     pytest.main(["-rx", "-v", "--pdb", __file__])

@@ -127,8 +127,8 @@ class Config(object):
         # _verify will toggle these if set
         self._configured_runner_args = False
         self._configured_tests_require = False
-        self._long_description_read = ""
-        self._read_long_description = None
+        self._long_read = ""  # used in direct setuptools interactions
+        self._long_read_in_setup = ""  # used in writing the setup.py
 
         # filled in during guessing phase
         self._metadata_exclusions = SetOnce()
@@ -159,10 +159,7 @@ class Config(object):
                     else:
                         kwargs[key] = self.packages
                 elif key == "long_description":
-                    if self.long_description == "long_description":
-                        kwargs[key] = self._read_long_description
-                    else:
-                        kwargs[key] = self.long_description
+                    kwargs[key] = self._long_read or self.long_description
                 else:
                     kwargs[key] = getattr(self, key)
 
@@ -188,6 +185,10 @@ class Config(object):
         for key in self._metadata_exclusions:
             metadata.pop(key, None)
 
+        # reset long_description back to the filename
+        if self._long_read:
+            metadata["long_description"] = self.long_description
+
         # add in feature keys that have been set
         for attr in Config._PYPACKAGE_KEYS:
             if hasattr(self, attr):
@@ -209,7 +210,7 @@ class Config(object):
         imports = ["from setuptools import setup"]
         if find_needed:
             imports.append("from setuptools import find_packages")
-        if self._long_description_read:
+        if self._long_read_in_setup:
             imports.insert(0, "import io")
 
         return "\n".join([
@@ -221,7 +222,7 @@ class Config(object):
             '"""\n\n',
             "\n".join(imports),
             self._test_runner_string() or "\n",
-            "{}setup(".format(self._long_description_read),
+            "{}setup(".format(self._long_read_in_setup),
             "\n".join([
                 "    {}={},".format(key, _multiline(val)) for key, val in
                 self._as_kwargs.items() if key not in altered_keys
@@ -234,12 +235,12 @@ class Config(object):
         ])
 
     def _long_description_string(self):
-        """Builds a string for long_description, using file read if used."""
+        """Builds a string for long_description (+file read) in setup.py."""
 
         if not hasattr(self, "long_description"):
             return
 
-        if self.long_description == "long_description":
+        if self._long_read_in_setup:
             return "long_description=long_description"
         else:
             return "long_description={!r:}".format(self.long_description)
@@ -316,21 +317,19 @@ class Config(object):
             None, modifies attributes of self
         """
 
-        if not hasattr(self, "long_description") or \
-           self.long_description == "long_description":
+        if self._long_read or not hasattr(self, "long_description"):
             return
 
         try:
             if os.path.isfile(self.long_description):
-                self._long_description_read = (
+                with io.open(self.long_description, encoding="utf-8") as descr:
+                    self._long_read = descr.read()
+                self._long_read_in_setup = (
                     'with io.open("{}", encoding="utf-8") as opendescr:\n'
                     "    long_description=opendescr.read()\n\n\n"
                 ).format(
                     self.long_description
                 )
-                with io.open(self.long_description, encoding="utf-8") as descr:
-                    self._read_long_description = descr.read()
-                self.long_description = "long_description"
             else:
                 return
         except:

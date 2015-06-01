@@ -55,6 +55,7 @@ def test_with_data(with_data):
         "packages": [package],
         "package_data": {package: ["{}/data/data_1".format(package)]},
         "include_package_data": True,
+        "long_description": "this package has data!",
     })
 
 
@@ -70,6 +71,26 @@ def test_with_scripts(with_scripts):
         "name": package,
         "packages": [package],
         "scripts": ["{}/my_script".format(scripts_dir)],
+    })
+
+
+def test_long_description_as_file(with_readme):
+    """Test installing with a filepath as a long_description."""
+
+    with mock.patch.object(setuptools, "setup") as mocked_setup:
+        install()
+    assert sys.argv == ["setup.py", "install"]
+    package_dir, mod_root = with_readme
+    package = os.path.basename(mod_root)
+    mocked_setup.assert_called_once_with(**{
+        "name": package,
+        "packages": [package],
+        "long_description": "{n}\n{d}\n\n{n}'s readme... with content!".format(
+            n=package,
+            d="=" * len(package),
+        ),
+        "package_data": {package: ['README']},
+        "include_package_data": True,
     })
 
 

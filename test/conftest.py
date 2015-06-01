@@ -8,6 +8,8 @@ import random
 import shutil
 from collections import defaultdict
 
+from pypackage.constants import META_NAME
+
 
 class TestModule(object):
     """Static object to track the testing module name."""
@@ -58,7 +60,7 @@ def new_package(new_module):
 
     # we have to write either a new find_packages() line or our package(s)
     # explicitly since we're in a subfolder of something named "test"
-    with open(os.path.join(new_module, "pypackage.meta"), "w") as openmeta:
+    with open(os.path.join(new_module, META_NAME), "w") as openmeta:
         openmeta.write('{"packages": ["find_packages()"]}')
 
     return new_module, pkg_root
@@ -101,6 +103,9 @@ def with_data(request, new_package):
     os.mkdir(data_dir)
     write_py(data_dir, "data_1", data=True)
 
+    with open(os.path.join(new_module, META_NAME), "w") as openmeta:
+        openmeta.write('{"long_description": "this package has data!"}')
+
     request.addfinalizer(module_cleanup)
     return new_module, pkg_root
 
@@ -122,6 +127,32 @@ def with_scripts(request, new_package):
 
     request.addfinalizer(module_cleanup)
     return new_module, request.param
+
+
+@pytest.fixture
+def with_readme(request, new_package):
+    """Builds a python package with a README file used as a long_description.
+
+    Returns:
+        tple of full path the package root and the package name
+    """
+
+    new_module, pkg_root = new_package
+    pkg_name = os.path.basename(pkg_root)
+
+    with open(os.path.join(new_module, "README"), "w") as openreadme:
+        openreadme.write("{n}\n{d}\n\n{n}'s readme... with content!".format(
+            n=pkg_name,
+            d="=" * len(pkg_name),
+        ))
+
+    with open(os.path.join(new_module, META_NAME), "w") as openmeta:
+        openmeta.write(
+            '{"packages": ["find_packages()"], "long_description": "README"}'
+        )
+
+    request.addfinalizer(module_cleanup)
+    return new_module, pkg_root
 
 
 def module_cleanup():
