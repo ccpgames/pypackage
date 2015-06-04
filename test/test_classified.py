@@ -69,14 +69,14 @@ def test_classifiers_current():
     )
 
     with open(packaged_trove_file) as opent:
-        packaged_troves = [t.strip() for t in opent.read().splitlines() if t]
+        packaged = [t.strip() for t in opent.read().splitlines() if t]
 
-    trove_req = requests.get(
-        "https://pypi.python.org/pypi?:action=list_classifiers").text
+    url = "https://pypi.python.org/pypi?:action=list_classifiers"
+    trove_req = requests.get(url).text
 
-    current_troves = [t.strip() for t in trove_req.splitlines() if t]
+    current = [t.strip() for t in trove_req.splitlines() if t]
 
-    assert packaged_troves == current_troves
+    assert packaged == current, "curl {} > pypackage/classifiers".format(url)
 
 
 if __name__ == "__main__":
