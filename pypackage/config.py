@@ -64,7 +64,7 @@ class Config(object):
         ("keywords", list),
         ("platforms", list),
         ("cmdclass", {str: object}),
-        ("data_files", list),
+        ("data_files", (list,)),
         ("package_dir", {str: str}),
         ("build_requires", (str, list)),
         ("setup_requires", (str, list)),
