@@ -2,7 +2,7 @@
 
 #
 # This script will create a new venv and install pypackage inside it.
-# It then creates three example packages, all inside a new example
+# It then creates a bunch of example packages, all inside a new example
 # directory. The hello-world package should be installed, the tested_mod and
 # detected_pkg packages should only be tested and built. The has_data package
 # should also be installed and should have a script entry point of `read_data`
