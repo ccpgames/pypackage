@@ -328,3 +328,15 @@ def perform_guesswork(config, options):
     if getattr(config, "package_data", None) and \
             not getattr(config, "include_package_data", None):
         config.include_package_data = True
+        config._metadata_exclusions.append("include_package_data")
+
+    # convert to kwargs here to have config run find_packages
+    kwargs = config._as_kwargs
+
+    has_data = getattr(config, "package_data", None)
+
+    if has_data and "packages" not in kwargs and "py_modules" not in guesses:
+        # we have no python to distribute, only some binary, move package_data
+        config.data_files = [("", list(set(*config.package_data.values())))]
+        config._metadata_exclusions.append("data_files")
+        delattr(config, "package_data")

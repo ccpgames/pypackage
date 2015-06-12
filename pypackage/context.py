@@ -58,11 +58,18 @@ class ManifestContext(object):
     def __enter__(self):
         """Write the MANIFEST.in file if there are data files in use."""
 
-        if not getattr(self.config, "package_data", None):
+        keys = ["package_data", "data_files"]
+        if not any([getattr(self.config, key, None) for key in keys]):
             return self  # nothing to do
 
         add_to_manifest = []
-        for _, files in self.config.package_data.items():
+        for _, files in getattr(self.config, "package_data", {}).items():
+            for file_ in files:
+                include_line = "include {}".format(file_)
+                if include_line not in self.previously_existing:
+                    add_to_manifest.append(include_line)
+
+        for _, files in getattr(self.config, "data_files", []):
             for file_ in files:
                 include_line = "include {}".format(file_)
                 if include_line not in self.previously_existing:

@@ -155,6 +155,25 @@ def with_readme(request, new_package):
     return new_module, pkg_root
 
 
+@pytest.fixture
+def only_binary(request, new_module):
+    """Creates a 'package' with only a single binary file.
+
+    Returns:
+        tuple of module root directory and binary file name
+    """
+
+    filename = "binary_blob_{}.bin".format(
+        random.randint(0, 1000000)
+    )
+
+    with open(os.path.join(new_module, filename), "w") as openblob:
+        openblob.write("randomly 4 again...")
+
+    request.addfinalizer(module_cleanup)
+    return new_module, filename
+
+
 def module_cleanup():
     """Used to cleanup the testing module."""
 

@@ -149,6 +149,20 @@ py-build -s
 cd ..
 
 #
+# pure binary project
+#
+
+mkdir pure_binary
+cd pure_binary
+dd if=/dev/random of=binary_blob.bin bs=10 count=10
+py-build
+pip install dist/*.tar.gz
+cd /
+python -c 'from pkg_resources import Requirement, resource_filename; print(resource_filename(Requirement.parse("pure_binary"), "binary_blob.bin"))'
+cd -
+cd ..
+
+#
 # data project
 #
 
