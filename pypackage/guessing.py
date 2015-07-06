@@ -266,6 +266,42 @@ def _guess_at_things(config):
     return guesses
 
 
+def _interactive_confirm(guesses):
+    """Prompt the user to confirm or remove guessed attributes."""
+
+    print((
+        "pypackage has guessed the following attributes:\n{}\n"
+        "would you like to disregard any of the above guesses?"
+    ).format("\n".join(['{} `{}` = "{}"'.format(index, attr, guesses[attr])
+                       for index, attr in enumerate(guesses, 1)])))
+
+    len_g = len(guesses)
+    query = 'use 1-{} or "all" to ignore (enter to accept): '.format(len_g)
+    from_user = True
+
+    while from_user and any([guesses[key] for key in guesses]):
+        try:
+            from_user = INPUT(query)
+        except (EOFError, KeyboardInterrupt):
+            raise SystemExit("\nInterrupted")
+        try:
+            from_user = int(from_user)
+            assert 1 <= from_user <= len_g  # no negatives, inside len_g
+        except:
+            if str(from_user).strip().lower() == "all":
+                print("ignoring all guesses")
+                guesses = {}
+            elif from_user:
+                print("{} is invalid.".format(from_user))
+        else:
+            # this is a hack, and the reason guess is an OrderedDict
+            from_user = list(guesses.keys())[from_user - 1]
+            guesses[from_user] = None
+            print("{} will not be guessed".format(from_user))
+
+    return guesses
+
+
 def perform_guesswork(config, options):
     """Look for missing attributes and take a guess at them.
 
@@ -281,39 +317,7 @@ def perform_guesswork(config, options):
     guesses = _guess_at_things(config)
 
     if options.interactive:
-        # confirm guesses...
-        print((
-            "pypackage has guessed the following attributes:\n{}\n"
-            "would you like to disregard any of the above guesses?"
-        ).format(
-            "\n".join(['{} `{}` = "{}"'.format(
-                index,
-                attr,
-                guesses[attr]
-            ) for index, attr in enumerate(guesses, 1)])
-        ))
-        len_g = len(guesses)
-        query = 'use 1-{} or "all" to ignore (enter to accept): '.format(len_g)
-        from_user = True
-        while from_user and any([guesses[key] for key in guesses]):
-            try:
-                from_user = INPUT(query)
-            except (EOFError, KeyboardInterrupt):
-                raise SystemExit("\nInterrupted")
-            try:
-                from_user = int(from_user)
-                assert 1 <= from_user <= len_g  # no negatives, inside len_g
-            except:
-                if str(from_user).strip().lower() == "all":
-                    print("ignoring all guesses")
-                    guesses = {}
-                elif from_user:
-                    print("{} is invalid.".format(from_user))
-            else:
-                # this is a hack, and the reason guess is an OrderedDict
-                from_user = list(guesses.keys())[from_user - 1]
-                guesses[from_user] = None
-                print("{} will not be guessed".format(from_user))
+        guesses = _interactive_confirm(guesses)
 
     for attr in guesses:
         if (not hasattr(config, attr) or options.re_probe) and guesses[attr]:
