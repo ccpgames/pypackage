@@ -174,6 +174,38 @@ def only_binary(request, new_module):
     return new_module, filename
 
 
+def random_str(length):
+    """Returns a random mixed case string of length provided."""
+
+    def _random_chr():
+        if random.randint(0, 1):
+            return chr(random.choice(range(65, 91)))
+        else:
+            return chr(random.choice(range(97, 122)))
+    return "".join([_random_chr() for _ in range(length)])
+
+
+@pytest.fixture
+def source_release(request, new_package):
+    """Creates a package with source_label and source_url filled in.
+
+    Returns:
+        tuple of module root directory, source_label, source_url
+    """
+
+    new_module, pkg_root = new_package
+    source_label = random_str(40)
+    source_url = "http://{}.com/{}".format(random_str(7), random_str(12))
+    with open(os.path.join(new_module, META_NAME), "w") as openmeta:
+        openmeta.write((
+            '{{"packages": ["find_packages()"], "source_label": "{}", '
+            '"source_url": "{}"}}'
+        ).format(source_label, source_url))
+
+    request.addfinalizer(module_cleanup)
+    return new_module, source_label, source_url
+
+
 def module_cleanup():
     """Used to cleanup the testing module."""
 

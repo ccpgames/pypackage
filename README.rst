@@ -35,6 +35,7 @@ Features
 -  automatic version, author, maintainer and email(s) detection (perfers
    __init__.py, __version__.py)
 -  curses front-end to python classifiers selection
+-  easy display of installed python package metadata with ``py-info <package>``
 
 Example, "Hello World" application:
 -----------------------------------

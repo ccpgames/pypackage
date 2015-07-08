@@ -94,5 +94,22 @@ def test_long_description_as_file(with_readme):
     })
 
 
+def test_source_tags(source_release):
+    """Ensure the source url and label are in the package metadata."""
+
+    with mock.patch.object(setuptools, "setup") as mocked_setup:
+        install()
+
+    assert sys.argv == ["setup.py", "install"]
+    package_dir, source_label, source_url = source_release
+    package = os.path.basename(package_dir)
+    call_args = mocked_setup.call_args[1]
+    assert call_args["name"] == package
+    assert call_args["packages"] == [package]
+    assert "<pypackage.config" in repr(call_args["metadata"])
+    assert ".Metadata object" in repr(call_args["metadata"])
+    assert callable(call_args["metadata"].write_pkg_info)
+
+
 if __name__ == "__main__":
     pytest.main(["-rx", "-v", "--pdb", __file__])

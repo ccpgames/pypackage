@@ -8,6 +8,8 @@ Info does not take any arguments, only looks up packages by name.
 """
 
 
+from __future__ import print_function
+
 import sys
 import pkg_resources
 
@@ -101,12 +103,20 @@ def info():
     env = pkg_resources.Environment()
     separator = False
     for arg in sys.argv[1:]:
-        pkg = env[pkg_resources.safe_name(arg)][0]
-        if not pkg:
-            print("The package {} was not found.".format(arg))
+        try:
+            pkg = env[pkg_resources.safe_name(arg)][0]
+        except IndexError:
+            print(
+                "The package {} was not found.".format(arg),
+                file=sys.stderr,
+            )
             continue
-        elif pkg.PKG_INFO != "METADATA":
-            print("The package {} does not use metadata.".format(arg))
+
+        if pkg.PKG_INFO != "METADATA":
+            print(
+                "The package {} does not use metadata.".format(arg),
+                file=sys.stderr,
+            )
             continue
 
         # this is without a doubt the dumbest line of code I have written

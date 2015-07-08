@@ -1,6 +1,8 @@
 """Tests for pypackages' config object and helper functions."""
 
 
+import io
+import os
 import json
 import mock
 import pytest
@@ -301,6 +303,22 @@ def test_long_read_errors_buried(with_readme):
         conf = config.get_config(with_readme[0])
     assert not conf._long_read
     assert not conf._long_read_in_setup
+
+
+def test_write_pkg_info_shim(source_release):
+    """Confirm the metadata shim to write out our extra metadata params."""
+
+    pkg_root, source_label, source_url = source_release
+    conf = config.get_config(pkg_root)
+
+    conf.metadata.write_pkg_info(pkg_root)
+    pkg_info_file = os.path.join(pkg_root, "PKG-INFO")
+    with io.open(pkg_info_file, "r", encoding="utf-8") as openinfo:
+        pkg_info = openinfo.read()
+
+    assert pkg_info.startswith("Metadata-Version: 1.0")
+    assert "Source-Label: {}".format(source_label) in pkg_info
+    assert "Source-Url: {}".format(source_url) in pkg_info
 
 
 if __name__ == "__main__":

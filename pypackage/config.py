@@ -467,6 +467,7 @@ class Config(object):
                 name = getattr(self, "name", undef)
                 version = getattr(self, "version", undef)
                 summary = getattr(self, "description", undef)
+                description = summary
                 home_page = getattr(self, "url", undef)
                 url = home_page
                 author = getattr(self, "author", undef)

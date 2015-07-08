@@ -107,5 +107,52 @@ def test_setup_entry__multilocations(reset_sys_argv):
     assert patched_config.call_count == 2
 
 
+def test_info(reset_sys_argv, capfd):
+    """Ensure we're looking up and dumping package metadata to stdout."""
+
+    sys.argv = ["py-info", "pytest"]
+    commands.info()
+    stdout, stderr = capfd.readouterr()
+
+    assert not stderr
+    assert "Name: pytest" in stdout
+    assert "License: MIT license" in stdout
+
+
+def test_info__pkg_not_found(reset_sys_argv, capfd):
+    """Ensure the error message when a package is not found."""
+
+    sys.argv = ["py-info", "some-random-non-existant-package"]
+    commands.info()
+    out, err = capfd.readouterr()
+
+    assert not out
+    assert "The package some-random-non-existant-package was not found." in err
+
+
+def test_info__pkg_without_metadata(reset_sys_argv, capfd):
+    """Verify the error message for a metadata-less package."""
+
+    mock_pkg = mock.Mock()
+    mock_pkg.PKG_INFO = "PKG-INFO"
+
+    mockenv = mock.Mock()
+    mockenv.__getitem__ = mock.Mock(return_value=[mock_pkg])
+
+    environment_patch = mock.patch.object(
+        commands.pkg_resources,
+        "Environment",
+        return_value=mockenv,
+    )
+
+    sys.argv = ["py-info", "foo-bar"]
+    with environment_patch:
+        commands.info()
+
+    out, err = capfd.readouterr()
+    assert not out
+    assert "The package foo-bar does not use metadata." in err
+
+
 if __name__ == "__main__":
     pytest.main(["-rx", "-v", "--pdb", __file__])
