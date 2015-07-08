@@ -6,6 +6,9 @@ deals with user options.
 
 
 import sys
+from functools import wraps
+
+from .constants import VERSION
 
 
 def flags(*args):
@@ -46,3 +49,25 @@ def get_options():
             self.version = flags("-v", "--version")
 
     return Options()
+
+
+def help_and_version(func):
+    """Checks for help and/or version flags.
+
+    If the user uses -h/--help it will SystemExit with the function docstring
+    If the user uses -v/--version it will SystemExit with pypackage's version
+    """
+
+    @wraps(func)
+    def _quick_help():
+        """Inner wrap function, check for flags or pass on to func."""
+
+        if flags("-h", "--help"):
+            raise SystemExit("\n".join([l.replace("    ", "", 1).rstrip() for
+                                        l in func.__doc__.splitlines()]))
+        elif flags("-v", "--version"):
+            raise SystemExit(VERSION)
+        else:
+            return func()
+
+    return _quick_help

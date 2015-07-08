@@ -253,7 +253,9 @@ def _guess_at_things(config):
         root = os.path.join(os.path.abspath(os.curdir), potential)
         if os.path.isdir(root):
             for file_ in os.listdir(root):
-                if os.access(os.path.join(root, file_), os.X_OK):
+                # windows does not have a firm grasp of executable files
+                if os.name == "nt" or \
+                   os.access(os.path.join(root, file_), os.X_OK):
                     scripts.append(os.path.join(potential, file_))
 
     if scripts:

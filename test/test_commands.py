@@ -5,6 +5,7 @@ import sys
 import mock
 import pytest
 
+import pypackage
 from pypackage import commands
 
 
@@ -80,7 +81,7 @@ def test_setup_entry__version(reset_sys_argv, flag):
     with pytest.raises(SystemExit) as patched_exit:
         commands.setup()
 
-    assert patched_exit.value.args[0] == commands.VERSION
+    assert patched_exit.value.args[0] == pypackage.VERSION
 
 
 def test_setup_entry__location(reset_sys_argv):

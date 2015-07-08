@@ -23,6 +23,8 @@ from .runner import PYTEST_TEMPLATE
 from .runner import UNITTEST_TEMPLATE
 from .constants import META_NAME
 from .constants import STRING_TYPE
+from .constants import VERSION
+from .constants import UNICODE
 
 
 class UNDEF(object):
@@ -81,12 +83,16 @@ class Config(object):
         ("use_2to3", bool),
         ("convert_2to3_doctests", list),
         ("use_2to3_fixtures", list),
+        ("extensions", {str: list}),
+        ("metadata", object),
     ])
     # our distinct keys, these do not get passed to setuptools/distutils
     _PYPACKAGE_KEYS = OrderedDict([
         ("test_runner", str),
         ("tests_dir", str),     # no function required for these two, they're
         ("runner_args", list),  # only used in the enable_test_runner function
+        ("source_label", str),  # these two are in a draft pep 426
+        ("source_url", str),    # early implementation here
     ])
 
     def __init__(self, **kwargs):
@@ -447,11 +453,55 @@ class Config(object):
         if hasattr(self, "tests_dir"):
             self.runner_args.append(self.tests_dir)
 
+    def _enable_metadata_obj(self):
+        """If source_label or source_url is used, build the metadata object."""
+
+        if any(getattr(self, k, None) for k in ("source_url", "source_label")):
+            undef = "UNKNOWN"
+
+            class Metadata(object):
+                """Metadata object class built with self attributes."""
+
+                metadata_version = "2.0"
+                generator = "pypackage ({})".format(VERSION)
+                name = getattr(self, "name", undef)
+                version = getattr(self, "version", undef)
+                summary = getattr(self, "description", undef)
+                home_page = getattr(self, "url", undef)
+                url = home_page
+                author = getattr(self, "author", undef)
+                author_email = getattr(self, "author_email", undef)
+                license = getattr(self, "license", undef)
+                platforms = getattr(self, "platforms", undef)
+                platform = platforms  # for PKG-INFO
+                keywords = getattr(self, "keywords", [])
+                source_label = getattr(self, "source_label", undef)
+                source_url = getattr(self, "source_url", undef)
+
+                def write_pkg_info(self, egg_info):
+                    """Include the future source keys in PKG-INFO."""
+
+                    pkg_info = os.path.join(egg_info, "PKG-INFO")
+                    info_attrs = ["name", "version", "summary", "home_page",
+                                  "author", "author_email", "license",
+                                  "description", "platform", "source_label",
+                                  "source_url"]
+                    with io.open(pkg_info, "w", encoding="utf-8") as openinfo:
+                        openinfo.write(UNICODE("Metadata-Version: 1.0\n"))
+                        for attr in info_attrs:
+                            openinfo.write(UNICODE("{}: {}\n".format(
+                                attr.title().replace("_", "-"),
+                                getattr(Metadata, attr),
+                            )))
+
+            self.metadata = Metadata()
+
     def _verify(self):
         """Ensures self attributes conform to their type declarations."""
 
         self._enable_test_runner()
         self._enable_long_description_read()
+        self._enable_metadata_obj()
 
         for key, type_ in list(Config._KEYS.items()) + list(
                 Config._PYPACKAGE_KEYS.items()):

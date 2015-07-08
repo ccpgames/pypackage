@@ -54,6 +54,7 @@ setup(
     entry_points={"console_scripts": [
         "py-build   = pypackage.commands:build",
         "py-develop = pypackage.commands:develop",
+        "py-info    = pypackage.commands:info",
         "py-install = pypackage.commands:install",
         "py-setup   = pypackage.commands:setup",
         "py-test    = pypackage.commands:run_tests",

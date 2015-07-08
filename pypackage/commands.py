@@ -3,16 +3,18 @@
 Each command's docstring is used as additional help if the -h flag is used.
 
 Setup is a bit of a snowflake in that it doesn't build anything, takes no args.
+
+Info does not take any arguments, only looks up packages by name.
 """
 
 
 import sys
+import pkg_resources
 
 from . import pypackage_setup
 from .config import get_config
-from .cmdline import flags
 from .cmdline import get_options
-from .constants import VERSION
+from .cmdline import help_and_version
 
 
 def install():
@@ -64,6 +66,7 @@ def build():
     pypackage_setup(build_commands, options=options, additional=build.__doc__)
 
 
+@help_and_version
 def setup():
     """py-setup will create a setup.py from metadata files and/or inspection.
 
@@ -80,13 +83,41 @@ def setup():
         FILEPATH    Metadata directory location (default: cwd)\
     """
 
-    if flags("-h", "--help"):
-        raise SystemExit("\n".join([line.replace("    ", "", 1).rstrip() for
-                                    line in setup.__doc__.splitlines()]))
-    elif flags("-v", "--version"):
-        raise SystemExit(VERSION)
-    elif len(sys.argv) >= 2:
+    if len(sys.argv) >= 2:
         for arg in sys.argv[1:]:
             print(get_config(arg))
     else:
         print(get_config())
+
+
+@help_and_version
+def info():
+    """py-info will print the most recent version of a package's metadata.
+
+    Usage:
+        py-info <package> [package] ...\
+    """
+
+    env = pkg_resources.Environment()
+    separator = False
+    for arg in sys.argv[1:]:
+        pkg = env[pkg_resources.safe_name(arg)][0]
+        if not pkg:
+            print("The package {} was not found.".format(arg))
+            continue
+        elif pkg.PKG_INFO != "METADATA":
+            print("The package {} does not use metadata.".format(arg))
+            continue
+
+        # this is without a doubt the dumbest line of code I have written
+        # it's also the only way I could find to get the package's metadata
+        # don't look too close, we're dealing with an email message object
+        metadata = pkg._parsed_pkg_info.items()
+
+        print("{}{}".format(
+            "{}\n".format("-" * 40) if separator else "",
+            "\n".join([
+                "{}: {}".format(k, v) for k, v in metadata if v != "UNKNOWN"
+            ]),
+        ))
+        separator = True

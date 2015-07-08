@@ -10,10 +10,12 @@ if sys.version_info > (3,):  # pragma: no cover
     INPUT = input
     STRING_TYPE = str
     CHECKMARK = chr(0x2713)
+    UNICODE = str
 else:  # pragma: no cover
     INPUT = raw_input           # nopep8
     STRING_TYPE = basestring    # nopep8
     CHECKMARK = unichr(0x2713)  # nopep8
+    UNICODE = unicode           # nopep8
 
 
 VERSION = "{} {}".format(
