@@ -198,9 +198,17 @@ if __name__ == "__main__":
 EOF
 chmod +x bin/random_data
 
-echo '{"version": "1.0.0", "packages": "has_data"}' > pypackage.meta
+cat <<EOF > pypackage.meta
+{
+    "version": "1.0.0",
+    "packages": "has_data",
+    "source_label": "some long git commit hash",
+    "source_url": "https://yourgitserver/a_shorter_hash"
+}
+EOF
 
 py-install
+py-info has-data
 
 random_data
 
