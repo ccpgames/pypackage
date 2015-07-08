@@ -40,6 +40,48 @@ class SetOnce(list):
             super(SetOnce, self).append(value)
 
 
+class Metadata(object):
+    """Metadata object class to shim the early stages of PKG-INFO writing.
+
+    Initialized with a Config instance
+    """
+
+    def __init__(self, config):
+        undef = "UNKNOWN"
+        self.metadata_version = "2.0"
+        self.generator = "pypackage ({})".format(VERSION)
+        self.name = getattr(config, "name", undef)
+        self.version = getattr(config, "version", undef)
+        self.summary = getattr(config, "description", undef)
+        self.description = self.summary
+        self.home_page = getattr(config, "url", undef)
+        self.url = self.home_page
+        self.author = getattr(config, "author", undef)
+        self.author_email = getattr(config, "author_email", undef)
+        self.license = getattr(config, "license", undef)
+        self.platforms = getattr(config, "platforms", undef)
+        self.platform = self.platforms  # for PKG-INFO
+        self.keywords = getattr(config, "keywords", [])
+        self.source_label = getattr(config, "source_label", undef)
+        self.source_url = getattr(config, "source_url", undef)
+
+    def write_pkg_info(self, egg_info):
+        """Include pypackage custom metadata in PKG-INFO."""
+
+        pkg_info = os.path.join(egg_info, "PKG-INFO")
+        info_attrs = ["name", "version", "summary", "home_page",
+                      "author", "author_email", "license",
+                      "description", "platform", "source_label",
+                      "source_url"]
+        with io.open(pkg_info, "w", encoding="utf-8") as openinfo:
+            openinfo.write(UNICODE("Metadata-Version: 1.0\n"))
+            for attr in info_attrs:
+                openinfo.write(UNICODE("{}: {}\n".format(
+                    attr.title().replace("_", "-"),
+                    getattr(self, attr),
+                )))
+
+
 class Config(object):
     """Config object. Attributes are passed as kwargs."""
 
@@ -151,19 +193,7 @@ class Config(object):
         for key in Config._KEYS:
             if hasattr(self, key):
                 if key == "packages":
-                    for package in self.packages:
-                        if package.startswith("find_packages(") and \
-                                ";" not in package and "." not in package:
-                            # no ;'s or .'s here to reduce attack surface
-                            try:
-                                found_packages = eval(package)
-                            except:
-                                continue
-                            else:
-                                kwargs[key] = found_packages
-                                break
-                    else:
-                        kwargs[key] = self.packages
+                    kwargs[key] = self._packages_actual()
                 elif key == "long_description":
                     kwargs[key] = self._long_read or self.long_description
                 else:
@@ -266,6 +296,22 @@ class Config(object):
             return NOSE_TEMPLATE.format(self=self)
         else:
             return PYTEST_TEMPLATE.format(self=self)
+
+    def _packages_actual(self):
+        """Returns the list of packages for direct use with setuptools."""
+
+        for package in self.packages:
+            if package.startswith("find_packages(") and \
+                    ";" not in package and "." not in package:
+                # no ;'s or .'s here to reduce attack surface
+                try:
+                    found_packages = eval(package)
+                except:
+                    continue
+                else:
+                    return found_packages
+        else:
+            return self.packages
 
     def _packages_string(self):
         """Builds a string for `packages=` in the setup.py.
@@ -457,45 +503,7 @@ class Config(object):
         """If source_label or source_url is used, build the metadata object."""
 
         if any(getattr(self, k, None) for k in ("source_url", "source_label")):
-            undef = "UNKNOWN"
-
-            class Metadata(object):
-                """Metadata object class built with self attributes."""
-
-                metadata_version = "2.0"
-                generator = "pypackage ({})".format(VERSION)
-                name = getattr(self, "name", undef)
-                version = getattr(self, "version", undef)
-                summary = getattr(self, "description", undef)
-                description = summary
-                home_page = getattr(self, "url", undef)
-                url = home_page
-                author = getattr(self, "author", undef)
-                author_email = getattr(self, "author_email", undef)
-                license = getattr(self, "license", undef)
-                platforms = getattr(self, "platforms", undef)
-                platform = platforms  # for PKG-INFO
-                keywords = getattr(self, "keywords", [])
-                source_label = getattr(self, "source_label", undef)
-                source_url = getattr(self, "source_url", undef)
-
-                def write_pkg_info(self, egg_info):
-                    """Include the future source keys in PKG-INFO."""
-
-                    pkg_info = os.path.join(egg_info, "PKG-INFO")
-                    info_attrs = ["name", "version", "summary", "home_page",
-                                  "author", "author_email", "license",
-                                  "description", "platform", "source_label",
-                                  "source_url"]
-                    with io.open(pkg_info, "w", encoding="utf-8") as openinfo:
-                        openinfo.write(UNICODE("Metadata-Version: 1.0\n"))
-                        for attr in info_attrs:
-                            openinfo.write(UNICODE("{}: {}\n".format(
-                                attr.title().replace("_", "-"),
-                                getattr(Metadata, attr),
-                            )))
-
-            self.metadata = Metadata()
+            self.metadata = Metadata(self)
 
     def _verify(self):
         """Ensures self attributes conform to their type declarations."""
