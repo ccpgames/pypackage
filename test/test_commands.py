@@ -130,11 +130,23 @@ def test_info__pkg_not_found(reset_sys_argv, capfd):
     assert "The package some-random-non-existant-package was not found." in err
 
 
-def test_info__pkg_without_metadata(reset_sys_argv, capfd):
-    """Verify the error message for a metadata-less package."""
+def test_info__using_pkg_info(reset_sys_argv, capfd):
+    """Verify the metadata when using older-style lookups."""
+
+    def metadata_generator():
+        """Mock metadata generator."""
+        for line in [
+            "Metadata-Version: 1.0",
+            "Version: 1.0.0",
+            "Source-Label: somewords",
+            "Source-Url: http://yourcompany.com",
+        ]:
+            yield line
+        raise StopIteration
 
     mock_pkg = mock.Mock()
     mock_pkg.PKG_INFO = "PKG-INFO"
+    mock_pkg._get_metadata = mock.Mock(return_value=metadata_generator())
 
     mockenv = mock.Mock()
     mockenv.__getitem__ = mock.Mock(return_value=[mock_pkg])
@@ -150,8 +162,9 @@ def test_info__pkg_without_metadata(reset_sys_argv, capfd):
         commands.info()
 
     out, err = capfd.readouterr()
-    assert not out
-    assert "The package foo-bar does not use metadata." in err
+    assert not err
+    for line in metadata_generator():
+        assert line in out
 
 
 if __name__ == "__main__":

@@ -112,22 +112,24 @@ def info():
             )
             continue
 
-        if pkg.PKG_INFO != "METADATA":
-            print(
-                "The package {} does not use metadata.".format(arg),
-                file=sys.stderr,
-            )
-            continue
+        # this is what a decade of legacy code looks like
+        if pkg.PKG_INFO == "METADATA":
+            # don't look too close, this is an email message object...
+            meta = pkg._parsed_pkg_info.items()
+            print("{}{}".format(
+                "{}\n".format("-" * 40) if separator else "",
+                "\n".join([
+                    "{}: {}".format(k, v) for k, v in meta if v != "UNKNOWN"
+                ]),
+            ))
+        else:
+            # this one's a string generator
+            meta = pkg._get_metadata("PKG-INFO")
+            print("{}{}".format(
+                "{}\n".format("-" * 40) if separator else "",
+                "\n".join([
+                    line for line in meta if "UNKNOWN" not in line
+                ])
+            ))
 
-        # this is without a doubt the dumbest line of code I have written
-        # it's also the only way I could find to get the package's metadata
-        # don't look too close, we're dealing with an email message object
-        metadata = pkg._parsed_pkg_info.items()
-
-        print("{}{}".format(
-            "{}\n".format("-" * 40) if separator else "",
-            "\n".join([
-                "{}: {}".format(k, v) for k, v in metadata if v != "UNKNOWN"
-            ]),
-        ))
         separator = True
