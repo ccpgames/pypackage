@@ -138,8 +138,8 @@ def test_info__using_pkg_info(reset_sys_argv, capfd):
         for line in [
             "Metadata-Version: 1.0",
             "Version: 1.0.0",
-            "Source-Label: somewords",
-            "Source-Url: http://yourcompany.com",
+            "Source-label: somewords",
+            "Source-url: http://yourcompany.com",
         ]:
             yield line
         raise StopIteration

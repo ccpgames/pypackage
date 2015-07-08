@@ -76,8 +76,9 @@ class Metadata(object):
         with io.open(pkg_info, "w", encoding="utf-8") as openinfo:
             openinfo.write(UNICODE("Metadata-Version: 1.0\n"))
             for attr in info_attrs:
-                openinfo.write(UNICODE("{}: {}\n".format(
-                    attr.title().replace("_", "-"),
+                openinfo.write(UNICODE("{}{}: {}\n".format(
+                    attr[0].upper(),
+                    "".join(attr[1:]).replace("_", "-"),
                     getattr(self, attr),
                 )))
 

@@ -317,8 +317,8 @@ def test_write_pkg_info_shim(source_release):
         pkg_info = openinfo.read()
 
     assert pkg_info.startswith("Metadata-Version: 1.0")
-    assert "Source-Label: {}".format(source_label) in pkg_info
-    assert "Source-Url: {}".format(source_url) in pkg_info
+    assert "Source-label: {}".format(source_label) in pkg_info
+    assert "Source-url: {}".format(source_url) in pkg_info
 
 
 if __name__ == "__main__":
