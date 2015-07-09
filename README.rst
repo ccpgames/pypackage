@@ -119,6 +119,114 @@ submit any patches to the ``setup.py`` because it's not a real thing in
 the source. As a project maintainer, you may even consider adding
 ``setup.py`` to the ``.gitignore`` of your pypackaged projects.
 
+pypackage.meta
+--------------
+
+Pypackage uses the ``pypackage.meta`` file in your project to fill in
+any details that it would otherwise not be able to guess. It is a JSON
+formatted file which can have any of the setuptools or distutils setup
+kwargs as key/value pairs. It also has a few extra keys to extend the
+functionality of setuptools (most notably to support the
+``source_label`` and ``source_url`` parameters mentioned in `PEP426 <http://legacy.python.org/dev/peps/pep-0426/>`__).
+Here is an example of a fully-featured pypackage.meta file (for the
+complete list of all available keys, they are the ``_KEYS`` and
+``_PYPACKAGE_KEYS`` OrderedDicts inside the ``Config`` object, `view source
+<https://github.com/ccpgames/pypackage/blob/master/pypackage/config.py>`__:
+
+.. code:: meta
+
+    {
+        # single line comments like so are allowed in the pypackage.meta
+        # but if py-build remakes the meta (-m flag) the comments will be removed
+
+        # name, if not provided, is guessed from the current directory name
+        "name": "demo-package",
+
+        # version, if not provided, is searched for in your source code
+        "version": "1.0.1",
+
+        # description becomes long_description as well unless long_description is also set
+        "description": "This is a demo package",
+
+        # filenames can also be used for long_description, relative path from package root
+        "long_description": "README.md",
+
+        "author": "Your name here",
+        "author_email": "yourname@yourcompany.com",
+
+        # if author is provided but maintainer is not, maintainer becomes author
+        "maintainer": "Someone else",
+        "maintainer_email": "someoneelse@yourcompany.com",
+
+        "url": "http://yourcompany.com/yourproject",
+        "download_url": "http://yourcompany.com/releases/yourproject",
+
+        # for packages, you can either provide a list of package names, use
+        # find_packages() with your own args/kwargs, or use pypackage's defaults.
+        # for instance, both of these are valid for packages:
+        "packages": ["your_package"],
+        # "packages": ["find_packages(exclude=['examples', 'tests'])"],
+        # if not provided, this is the default for packages:
+        # "packages": ["find_packages(exclude=['test', 'tests'])"],
+
+        # py_modules can be used to install top level python modules, but it will
+        # also be guessed at and included if not provided (any top level .py file
+        # is included by pypackage's guesswork).
+        "py_modules": ["demo_module"],
+
+        # scripts may be provided as relative file paths, or if not provided, pypackage
+        # will guess at them. any file in either `bin` or `scripts` directory down
+        # from the package root will be included (on windows) or any executable file
+        # in those directories are included when building on anything that's not windows.
+        "scripts": ["bin/demo_script"],
+
+        # entry_points are the same syntax as you're used to. pypackage makes no guesses at these
+        "entry_points": {"paste.app_factory": ["main = demo_package.web:paste"]},
+
+        # a list of packages to be installed when your package is installed
+        "install_requires": ["requests > 1.0.0"],
+
+        # a list of packages to be installed when your package is tested
+        # note if you're using test_runner you don't have to include the runner or coverage
+        "tests_require": ["twisted > 15.0.0"],
+
+        # list of python classifiers. you can run `py-build -R` to forcibly (re)enter
+        # the curses classifiers selection process
+        "classifiers": [
+            "Development Status :: 4 - Beta",
+            "Environment :: Web Environment"
+        ],
+
+        # ~~ PYPACKAGE ONLY KEYS ~~
+        # everything above this was fairly standard, below are pypackage-specific features
+
+        # test_runner can be one of three strings, "nose", "pytest", or "unittest"
+        # if provided, pypackage will handle gathering and executing your tests via
+        # automatic methods of whatever runner you prefer. to run your tests with
+        # a test_runner in use, you can either use `py-test` or `py-build -s` to
+        # create the `setup.py` and run `python setup.py test` with that.
+        "test_runner": "pytest",
+
+        # tests_dir can be used to provide the directory which contains the tests,
+        # if automatic discovery does not work for your layout
+        "tests_dir": "tests",
+
+        # runner_args are arguments provided to your test_runner, if you need to
+        # use custom flags, perhaps to output a JUnit XML or what have you. Note
+        # that if you do provide runner_args that the default runner_args are
+        # swapped out in place of what you have provided, no merging occurs.
+        "runner_args": ["-vv", "--pdb"],
+
+        # source_label and source_url are described in draft PEP426. they are
+        # inserted into the package's metadata, which can be retrieved by using
+        # `py-info <package>` on any installed package. the contents are not
+        # validated to conform to any spec other than being a string
+        "source_label": "5ce507eac031d4e1ccd2c34f7812240ac391d749",
+
+        # same with source_url, it's only in the metadata
+        "source_url": "https://yourcompany.com/commit/5ce507eac031d4e1ccd2c34f7812240ac391d749"
+    }
+
 Further examples
 ----------------
 
