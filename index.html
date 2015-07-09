@@ -1,34 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>Pypackage by ccpgames</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Pypackage</h1>
-        <p>Tools to package python from static metadata</p>
+    <section class="page-header">
+      <h1 class="project-name">Pypackage</h1>
+      <h2 class="project-tagline">Tools to package python from static metadata</h2>
+      <a href="https://github.com/ccpgames/pypackage" class="btn">View on GitHub</a>
+      <a href="https://github.com/ccpgames/pypackage/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ccpgames/pypackage/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-        <p class="view"><a href="https://github.com/ccpgames/pypackage">View the Project on GitHub <small>ccpgames/pypackage</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/ccpgames/pypackage/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/ccpgames/pypackage/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/ccpgames/pypackage">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
+    <section class="main-content">
+      <h1>
 <a id="pypackage" class="anchor" href="#pypackage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pypackage</h1>
 
 <p><a href="https://travis-ci.org/ccpgames/pypackage"><img src="https://travis-ci.org/ccpgames/pypackage.svg?branch=master" alt="Build
@@ -159,6 +150,114 @@ the source. As a project maintainer, you may even consider adding
 <code>setup.py</code> to the <code>.gitignore</code> of your pypackaged projects.</p>
 
 <h2>
+<a id="pypackagemeta" class="anchor" href="#pypackagemeta" aria-hidden="true"><span class="octicon octicon-link"></span></a>pypackage.meta</h2>
+
+<p>Pypackage uses the <code>pypackage.meta</code> file in your project to fill in any
+details that it would otherwise not be able to guess. It is a JSON
+formatted file which can have any of the setuptools or distutils setup
+kwargs as key/value pairs. It also has a few extra keys to extend the
+functionality of setuptools (most notably to support the <code>source_label</code>
+and <code>source_url</code> parameters mentioned in
+<a href="http://legacy.python.org/dev/peps/pep-0426/">PEP426</a>). Here is an
+example of a fully-featured pypackage.meta file (for the complete list
+of all available keys, they are the <code>_KEYS</code> and <code>_PYPACKAGE_KEYS</code>
+OrderedDicts inside the <code>Config</code> object, <a href="https://github.com/ccpgames/pypackage/blob/master/pypackage/config.py">view
+source</a>:</p>
+
+<pre lang="sourceCode"><code>{
+    # single line comments like so are allowed in the pypackage.meta
+    # but if py-build remakes the meta (-m flag) the comments will be removed
+
+    # name, if not provided, is guessed from the current directory name
+    "name": "demo-package",
+
+    # version, if not provided, is searched for in your source code
+    "version": "1.0.1",
+
+    # description becomes long_description as well unless long_description is also set
+    "description": "This is a demo package",
+
+    # filenames can also be used for long_description, relative path from package root
+    "long_description": "README.md",
+
+    "author": "Your name here",
+    "author_email": "yourname@yourcompany.com",
+
+    # if author is provided but maintainer is not, maintainer becomes author
+    "maintainer": "Someone else",
+    "maintainer_email": "someoneelse@yourcompany.com",
+
+    "url": "http://yourcompany.com/yourproject",
+    "download_url": "http://yourcompany.com/releases/yourproject",
+
+    # for packages, you can either provide a list of package names, use
+    # find_packages() with your own args/kwargs, or use pypackage's defaults.
+    # for instance, both of these are valid for packages:
+    "packages": ["your_package"],
+    # "packages": ["find_packages(exclude=['examples', 'tests'])"],
+    # if not provided, this is the default for packages:
+    # "packages": ["find_packages(exclude=['test', 'tests'])"],
+
+    # py_modules can be used to install top level python modules, but it will
+    # also be guessed at and included if not provided (any top level .py file
+    # is included by pypackage's guesswork).
+    "py_modules": ["demo_module"],
+
+    # scripts may be provided as relative file paths, or if not provided, pypackage
+    # will guess at them. any file in either `bin` or `scripts` directory down
+    # from the package root will be included (on windows) or any executable file
+    # in those directories are included when building on anything that's not windows.
+    "scripts": ["bin/demo_script"],
+
+    # entry_points are the same syntax as you're used to. pypackage makes no guesses at these
+    "entry_points": {"paste.app_factory": ["main = demo_package.web:paste"]},
+
+    # a list of packages to be installed when your package is installed
+    "install_requires": ["requests &gt; 1.0.0"],
+
+    # a list of packages to be installed when your package is tested
+    # note if you're using test_runner you don't have to include the runner or coverage
+    "tests_require": ["twisted &gt; 15.0.0"],
+
+    # list of python classifiers. you can run `py-build -R` to forcibly (re)enter
+    # the curses classifiers selection process
+    "classifiers": [
+        "Development Status :: 4 - Beta",
+        "Environment :: Web Environment"
+    ],
+
+    # ~~ PYPACKAGE ONLY KEYS ~~
+    # everything above this was fairly standard, below are pypackage-specific features
+
+    # test_runner can be one of three strings, "nose", "pytest", or "unittest"
+    # if provided, pypackage will handle gathering and executing your tests via
+    # automatic methods of whatever runner you prefer. to run your tests with
+    # a test_runner in use, you can either use `py-test` or `py-build -s` to
+    # create the `setup.py` and run `python setup.py test` with that.
+    "test_runner": "pytest",
+
+    # tests_dir can be used to provide the directory which contains the tests,
+    # if automatic discovery does not work for your layout
+    "tests_dir": "tests",
+
+    # runner_args are arguments provided to your test_runner, if you need to
+    # use custom flags, perhaps to output a JUnit XML or what have you. Note
+    # that if you do provide runner_args that the default runner_args are
+    # swapped out in place of what you have provided, no merging occurs.
+    "runner_args": ["-vv", "--pdb"],
+
+    # source_label and source_url are described in draft PEP426. they are
+    # inserted into the package's metadata, which can be retrieved by using
+    # `py-info &lt;package&gt;` on any installed package. the contents are not
+    # validated to conform to any spec other than being a string
+    "source_label": "5ce507eac031d4e1ccd2c34f7812240ac391d749",
+
+    # same with source_url, it's only in the metadata
+    "source_url": "https://yourcompany.com/commit/5ce507eac031d4e1ccd2c34f7812240ac391d749"
+}
+</code></pre>
+
+<h2>
 <a id="further-examples" class="anchor" href="#further-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Further examples</h2>
 
 <p>If your OS can run a bash script, execute <code>demo.sh</code> in the top level of
@@ -211,13 +310,16 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/ccpgames">ccpgames</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ccpgames/pypackage">Pypackage</a> is maintained by <a href="https://github.com/ccpgames">ccpgames</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
+
+    </section>
+
+  
   </body>
 </html>
+
