@@ -1,6 +1,10 @@
 Pypackage
 =========
 
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/ccpgames/pypackage
+   :target: https://gitter.im/ccpgames/pypackage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 `View this on GitHub Pages <http://ccpgames.github.io/pypackage/>`__
 
 |Build Status| |Coverage Status| |Version| |Download format| |Downloads
