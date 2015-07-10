@@ -1,14 +1,10 @@
 Pypackage
 =========
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/ccpgames/pypackage
-   :target: https://gitter.im/ccpgames/pypackage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-
 `View this on GitHub Pages <http://ccpgames.github.io/pypackage/>`__
 
 |Build Status| |Coverage Status| |Version| |Download format| |Downloads
-this month| |Development Status| |License|
+this month| |Development Status| |License| |Gitter Chat|
 
 Pypackage is a collection of python packaging applications including:
 
@@ -306,3 +302,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    :target: https://pypi.python.org/pypi/pypackage/
 .. |License| image:: https://img.shields.io/github/license/ccpgames/pypackage.svg
    :target: https://pypi.python.org/pypi/pypackage/
+.. |Gitter Chat| image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/ccpgames/pypackage
+   :target: https://gitter.im/ccpgames/pypackage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
