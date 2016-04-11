@@ -17,27 +17,30 @@ Pypackage is a collection of python packaging applications including:
     py-setup
     py-test
 
-The main goal of Pypackage is to make python packaging easier and
+The goal of Pypackage is to make python packaging easier and
 faster.
 
 Wouldn't it be nice if you could just write some python, run a command,
-and have a distributable package? Well now you can!
+and have a distributable package? 
+
+Well, now you can!
 
 Features
 --------
 
--  automatic python modules and packages detection
+-  automatic detection of python modules and packages
 -  automatic inclusion of non-python package data files, and their
-   inclusion in and writing of the MANIFEST.in
--  support for three different testing frameworks (pytest, nose, and
+   inclusion in and writing of the ``MANIFEST.in``
+-  support for three different testing frameworks (`pytest, nose, and
    unittest) for use with ``setup.py test``
--  automatic script detection (any executable file in ./bin or ./scripts)
--  automatic version, author, maintainer and email(s) detection (perfers
-   __init__.py, __version__.py)
+-  automatic script detection (any executable file in ``./bin`` or
+   ``./scripts``)
+-  automatic ``version``, ``author``, ``maintainer`` and ``email``(s)
+   detection (prefers ``__init__.py``, ``__version__.py``)
 -  curses front-end to python classifiers selection
--  easy display of installed python package metadata with ``py-info <package>``
+-  easy access to package metadata with ``py-info <package>``
 
-Example, "Hello World" application:
+Example: "Hello World" application:
 -----------------------------------
 
 .. code:: bash
@@ -48,28 +51,23 @@ Example, "Hello World" application:
     $ py-build -is
 
 The ``py-build -is`` command will take you through an interactive
-py-build session and save the setup.py to disk after creating it, but
-will not run it.
+``py-build`` session, and then save the ``setup.py`` to disk (but it 
+will not run it).
 
-You can also use the ``py-setup`` command at any time to print what
-Pypackage would use as a setup.py in the current directory's context.
+You can use ``py-setup`` at any time to see what Pypackage would use 
+as a ``setup.py`` in the current directory's context.
 
-Metadata can be mixed in with site-wide defaults from $HOME/.pypackage
+Metadata can be mixed in with site-wide defaults from ``$HOME/.pypackage``,
 if you want to fill in some common attributes for all your projects.
 
-Pypackage also provides three different test runners to automatically
-find and run your tests with ``python setup.py test``, you can use any
-of pytest, nose or unittest.
+Pypackage can also find and run your tests with ``python setup.py test``.
+It supports three different test runners: pytest, nose, and unittest.
 
-To be clear though: pypackage does not intend on replacing setuptools,
-pip, or really anything at all in the python packaging tool-chain, it
-only attempts to complement those utilities and make getting started
-with python packaging a little easier.
+To be clear: pypackage does *not* replace setuptools, pip, or anything 
+in the python packaging tool-chain; it only attempts to complement those utilities, and make python packaging a little easier.
 
-In my utopian perfect dream world, I'd see projects not having a
-setup.py under source control, instead only a static metadata file, then
-having the inverse relationship being true in the distribution version
-of the package.
+In my perfect utopian dream world, I'd see projects not have a ``setup.py`` under source control. Instead there would only be a static metadata file. 
+In the distribution version of the package, the inverse would be true.
 
 Example, write Python and send it to PyPI
 -----------------------------------------
@@ -106,17 +104,17 @@ Every time after that, to update your package is a two step process:
     $ py-build
     $ twine upload dist/*
 
-This will upload a binary wheel and source distribution to PyPI so you
+This will upload a binary wheel and source distribution to PyPI, so you
 can share your work with the world.
 
 The source distribution will include a ``setup.py`` and will not include
 the ``pypackage.meta`` if you use one. In this way, Pypackage does not
 create a build dependency on your distribution, but rather only on your
 source, or perhaps more specifically, your build chain and/or
-development environment. Unless you choose to develop off of the
-distributed source version, then carry on doing your thing. Just don't
-submit any patches to the ``setup.py`` because it's not a real thing in
-the source. As a project maintainer, you may even consider adding
+development environment. (Unless you choose to develop off of the
+distributed source version, then carry on doing your thing.) 
+
+Just don't submit any patches to the ``setup.py``, because it's not a real thing in the source. As a project maintainer, you may even consider adding
 ``setup.py`` to the ``.gitignore`` of your pypackaged projects.
 
 pypackage.meta
@@ -124,14 +122,18 @@ pypackage.meta
 
 Pypackage uses the ``pypackage.meta`` file in your project to fill in
 any details that it would otherwise not be able to guess. It is a JSON
-formatted file which can have any of the setuptools or distutils setup
-kwargs as key/value pairs. It also has a few extra keys to extend the
-functionality of setuptools (most notably to support the
-``source_label`` and ``source_url`` parameters mentioned in `PEP426 <http://legacy.python.org/dev/peps/pep-0426/>`__).
-Here is an example of a fully-featured pypackage.meta file (for the
-complete list of all available keys, they are the ``_KEYS`` and
-``_PYPACKAGE_KEYS`` OrderedDicts inside the ``Config`` object, `view source
-<https://github.com/ccpgames/pypackage/blob/master/pypackage/config.py>`__:
+formatted file which can have any of the ``setuptools`` or ``distutils`` 
+setup kwargs as key/value pairs. 
+
+It also has a few extra keys to extend the functionality of setuptools (most 
+notably to support the ``source_label`` and ``source_url`` parameters, 
+mentioned in `PEP426 <http://legacy.python.org/dev/peps/pep-0426/>`__).
+
+Below is an example of a fully-featured ``pypackage.meta`` file. 
+(For a complete list of all available keys, they are the ``_KEYS`` and
+``_PYPACKAGE_KEYS`` OrderedDicts found in the ``Config`` object; 
+`view the source
+<https://github.com/ccpgames/pypackage/blob/master/pypackage/config.py>`__):
 
 .. code:: meta
 
@@ -255,7 +257,7 @@ Curses development status screen with ``Beta`` selected:
     :alt: development status classifiers
     :align: center
 
-Interactive build process which used the above in it's classifiers selection:
+Interactive build process which used the above in its classifiers selection:
 
 .. image:: https://raw.githubusercontent.com/ccpgames/pypackage/gh-pages/images/interactive_build_post.png
     :alt: `py-build -si` interactive build session
