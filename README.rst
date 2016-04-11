@@ -31,7 +31,7 @@ Features
 -  automatic detection of python modules and packages
 -  automatic inclusion of non-python package data files, and their
    inclusion in and writing of the ``MANIFEST.in``
--  support for three different testing frameworks (`pytest, nose, and
+-  support for three different testing frameworks (pytest, nose, and
    unittest) for use with ``setup.py test``
 -  automatic script detection (any executable file in ``./bin`` or
    ``./scripts``)
