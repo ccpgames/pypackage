@@ -686,8 +686,10 @@ def json_maybe_commented(filename, remove_comments=False):
         try:
             return reduce_json_unicode(json.loads("".join(cleaned_lines)))
         except Exception as error:
-            logging.error("Error reading json from %s: %r", filename, error)
-            return {}
+            raise SystemExit("Error reading json from {}: {!r}".format(
+                filename,
+                error,
+            ))
     else:
         try:
             with open(filename, "r") as openfile:
