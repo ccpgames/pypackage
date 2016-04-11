@@ -213,9 +213,13 @@ def test_verify_key__dict_types():
 def test_multiline():
     """Ensure the proper formatting for multiline pprint formats."""
 
-    blurb = "really long string that will require multiple lines"
-    blurber = lambda x: "{}-{}".format(blurb, x)
-    value = [blurber(i) for i in range(5)]
+    value = [
+        'really long string that will require multiple lines-0',
+        'really long string that will require multiple lines-1',
+        'really long string that will require multiple lines-2',
+        'really long string that will require multiple lines-3',
+        'really long string that will require multiple lines-4',
+    ]
     assert config._multiline(value) == """[
         'really long string that will require multiple lines-0',
         'really long string that will require multiple lines-1',
