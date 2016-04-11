@@ -236,13 +236,12 @@ def test_json_loading__failure():
     with open(filename, "w") as openfile:
         openfile.write("# yeah comments are ok\n{but invalid json: [is not]}")
 
-    with mock.patch.object(config.logging, "error") as patched_err_log:
-        assert config.json_maybe_commented(filename) == {}
+    with pytest.raises(SystemExit) as error:
+        config.json_maybe_commented(filename)
 
-    assert patched_err_log.call_args[0][0] == "Error reading json from %s: %r"
-    assert patched_err_log.call_args[0][1] == filename
-    assert isinstance(patched_err_log.call_args[0][2], ValueError)
-    assert patched_err_log.call_count == 1
+    exit = error.exconly()
+    assert "SystemExit: Error reading json from {}:".format(filename) in exit
+    assert "Expecting property name" in exit
 
 
 @pytest.mark.parametrize("original, alias", [
