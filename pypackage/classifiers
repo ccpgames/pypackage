@@ -44,6 +44,7 @@ Framework :: Django :: 1.5
 Framework :: Django :: 1.6
 Framework :: Django :: 1.7
 Framework :: Django :: 1.8
+Framework :: Django :: 1.9
 Framework :: Flask
 Framework :: IDLE
 Framework :: IPython
@@ -59,7 +60,9 @@ Framework :: Plone :: 4.3
 Framework :: Plone :: 5.0
 Framework :: Pylons
 Framework :: Pyramid
+Framework :: Pytest
 Framework :: Review Board
+Framework :: Robot Framework
 Framework :: Scrapy
 Framework :: Setuptools Plugin
 Framework :: Sphinx
