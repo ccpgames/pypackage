@@ -35,7 +35,7 @@ Features
    unittest) for use with ``setup.py test``
 -  automatic script detection (any executable file in ``./bin`` or
    ``./scripts``)
--  automatic ``version``, ``author``, ``maintainer`` and ``email``(s)
+-  automatic ``version``, ``author``, ``maintainer`` and ``email`` (s)
    detection (prefers ``__init__.py``, ``__version__.py``)
 -  curses front-end to python classifiers selection
 -  easy access to package metadata with ``py-info <package>``
