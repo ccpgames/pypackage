@@ -5,7 +5,7 @@
     <title>Pypackage by ccpgames</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <h1>
-<a id="pypackage" class="anchor" href="#pypackage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pypackage</h1>
+<a id="pypackage" class="anchor" href="#pypackage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pypackage</h1>
 
 <p><a href="https://travis-ci.org/ccpgames/pypackage"><img src="https://travis-ci.org/ccpgames/pypackage.svg?branch=master" alt="Build
 Status"></a>
@@ -33,7 +33,8 @@ format"></a>
 month"></a>
 <a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/badge/status-beta-orange.svg" alt="Development
 Status"></a>
-<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/github/license/ccpgames/pypackage.svg" alt="License"></a></p>
+<a href="https://pypi.python.org/pypi/pypackage/"><img src="https://img.shields.io/github/license/ccpgames/pypackage.svg" alt="License"></a>
+<a href="https://gitter.im/ccpgames/pypackage?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Join the chat at https://gitter.im/ccpgames/pypackage"></a></p>
 
 <p>Pypackage is a collection of python packaging applications including:</p>
 
@@ -45,34 +46,35 @@ py-setup
 py-test
 </code></pre>
 
-<p>The main goal of Pypackage is to make python packaging easier and
-faster.</p>
+<p>The goal of Pypackage is to make python packaging easier and faster.</p>
 
 <p>Wouldn't it be nice if you could just write some python, run a command,
-and have a distributable package? Well now you can!</p>
+and have a distributable package?</p>
+
+<p>Well, now you can!</p>
 
 <h2>
-<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
-<li>  automatic python modules and packages detection</li>
+<li>  automatic detection of python modules and packages</li>
 <li>  automatic inclusion of non-python package data files, and their
-inclusion in and writing of the MANIFEST.in</li>
-<li>  support for three different testing frameworks (pytest, nose, and
-unittest) for use with <code>setup.py test</code>
+inclusion in and writing of the <code>MANIFEST.in</code>
 </li>
-<li>  automatic script detection (any executable file in ./bin or
-./scripts)</li>
-<li>  automatic version, author, maintainer and email(s) detection
-(perfers __init__.py, __version__.py)</li>
+<li>  support for three different testing frameworks (pytest, nose,
+and unittest) for use with <code>setup.py test</code>
+</li>
+<li>  automatic script detection (any executable file in <code>./bin</code> or
+<code>./scripts</code>)</li>
+<li>  automatic <code>version</code>, <code>author</code>, <code>maintainer</code> and <code>email</code> (s)
+detection (prefers <code>__init__.py</code>, <code>__version__.py</code>)</li>
 <li>  curses front-end to python classifiers selection</li>
-<li>  easy display of installed python package metadata with
-<code>py-info &lt;package&gt;</code>
+<li>  easy access to package metadata with <code>py-info &lt;package&gt;</code>
 </li>
 </ul>
 
 <h2>
-<a id="example-hello-world-application" class="anchor" href="#example-hello-world-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example, "Hello World" application:</h2>
+<a id="example-hello-world-application" class="anchor" href="#example-hello-world-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example: "Hello World" application:</h2>
 
 <pre lang="sourceCode"><code>$ mkdir hello_world
 $ cd hello_world
@@ -80,32 +82,31 @@ $ vim hello_world.py   # write your python here... :)
 $ py-build -is
 </code></pre>
 
-<p>The <code>py-build -is</code> command will take you through an interactive py-build
-session and save the setup.py to disk after creating it, but will not
-run it.</p>
+<p>The <code>py-build -is</code> command will take you through an interactive
+<code>py-build</code> session, and then save the <code>setup.py</code> to disk (but it will
+not run it).</p>
 
-<p>You can also use the <code>py-setup</code> command at any time to print what
-Pypackage would use as a setup.py in the current directory's context.</p>
+<p>You can use <code>py-setup</code> at any time to see what Pypackage would use as a
+<code>setup.py</code> in the current directory's context.</p>
 
-<p>Metadata can be mixed in with site-wide defaults from \$HOME/.pypackage
-if you want to fill in some common attributes for all your projects.</p>
+<p>Metadata can be mixed in with site-wide defaults from
+<code>$HOME/.pypackage</code>, if you want to fill in some common attributes for
+all your projects.</p>
 
-<p>Pypackage also provides three different test runners to automatically
-find and run your tests with <code>python setup.py test</code>, you can use any of
-pytest, nose or unittest.</p>
+<p>Pypackage can also find and run your tests with <code>python setup.py test</code>.
+It supports three different test runners: pytest, nose, and unittest.</p>
 
-<p>To be clear though: pypackage does not intend on replacing setuptools,
-pip, or really anything at all in the python packaging tool-chain, it
-only attempts to complement those utilities and make getting started
-with python packaging a little easier.</p>
+<p>To be clear: pypackage does <em>not</em> replace setuptools, pip, or anything
+in the python packaging tool-chain; it only attempts to complement those
+utilities, and make python packaging a little easier.</p>
 
-<p>In my utopian perfect dream world, I'd see projects not having a
-setup.py under source control, instead only a static metadata file, then
-having the inverse relationship being true in the distribution version
-of the package.</p>
+<p>In my perfect utopian dream world, I'd see projects not have a
+<code>setup.py</code> under source control. Instead there would only be a static
+metadata file. In the distribution version of the package, the inverse
+would be true.</p>
 
 <h2>
-<a id="example-write-python-and-send-it-to-pypi" class="anchor" href="#example-write-python-and-send-it-to-pypi" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example, write Python and send it to PyPI</h2>
+<a id="example-write-python-and-send-it-to-pypi" class="anchor" href="#example-write-python-and-send-it-to-pypi" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example, write Python and send it to PyPI</h2>
 
 <p>First, <a href="https://docs.python.org/2/distutils/packageindex.html#pypirc">configure your ~/.pypirc
 file</a> with
@@ -136,33 +137,36 @@ $ twine upload dist/* || pip install twine &amp;&amp; twine upload dist/*
 $ twine upload dist/*
 </code></pre>
 
-<p>This will upload a binary wheel and source distribution to PyPI so you
+<p>This will upload a binary wheel and source distribution to PyPI, so you
 can share your work with the world.</p>
 
 <p>The source distribution will include a <code>setup.py</code> and will not include
 the <code>pypackage.meta</code> if you use one. In this way, Pypackage does not
 create a build dependency on your distribution, but rather only on your
 source, or perhaps more specifically, your build chain and/or
-development environment. Unless you choose to develop off of the
-distributed source version, then carry on doing your thing. Just don't
-submit any patches to the <code>setup.py</code> because it's not a real thing in
-the source. As a project maintainer, you may even consider adding
-<code>setup.py</code> to the <code>.gitignore</code> of your pypackaged projects.</p>
+development environment. (Unless you choose to develop off of the
+distributed source version, then carry on doing your thing.)</p>
+
+<p>Just don't submit any patches to the <code>setup.py</code>, because it's not a real
+thing in the source. As a project maintainer, you may even consider
+adding <code>setup.py</code> to the <code>.gitignore</code> of your pypackaged projects.</p>
 
 <h2>
-<a id="pypackagemeta" class="anchor" href="#pypackagemeta" aria-hidden="true"><span class="octicon octicon-link"></span></a>pypackage.meta</h2>
+<a id="pypackagemeta" class="anchor" href="#pypackagemeta" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pypackage.meta</h2>
 
 <p>Pypackage uses the <code>pypackage.meta</code> file in your project to fill in any
 details that it would otherwise not be able to guess. It is a JSON
-formatted file which can have any of the setuptools or distutils setup
-kwargs as key/value pairs. It also has a few extra keys to extend the
-functionality of setuptools (most notably to support the <code>source_label</code>
-and <code>source_url</code> parameters mentioned in
-<a href="http://legacy.python.org/dev/peps/pep-0426/">PEP426</a>). Here is an
-example of a fully-featured pypackage.meta file (for the complete list
-of all available keys, they are the <code>_KEYS</code> and <code>_PYPACKAGE_KEYS</code>
-OrderedDicts inside the <code>Config</code> object, <a href="https://github.com/ccpgames/pypackage/blob/master/pypackage/config.py">view
-source</a>:</p>
+formatted file which can have any of the <code>setuptools</code> or <code>distutils</code>
+setup kwargs as key/value pairs.</p>
+
+<p>It also has a few extra keys to extend the functionality of setuptools
+(most notably to support the <code>source_label</code> and <code>source_url</code> parameters,
+mentioned in <a href="http://legacy.python.org/dev/peps/pep-0426/">PEP426</a>).</p>
+
+<p>Below is an example of a fully-featured <code>pypackage.meta</code> file. (For a
+complete list of all available keys, they are the <code>_KEYS</code> and
+<code>_PYPACKAGE_KEYS</code> OrderedDicts found in the <code>Config</code> object; <a href="https://github.com/ccpgames/pypackage/blob/master/pypackage/config.py">view the
+source</a>):</p>
 
 <pre lang="sourceCode"><code>{
     # single line comments like so are allowed in the pypackage.meta
@@ -258,7 +262,7 @@ source</a>:</p>
 </code></pre>
 
 <h2>
-<a id="further-examples" class="anchor" href="#further-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Further examples</h2>
+<a id="further-examples" class="anchor" href="#further-examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Further examples</h2>
 
 <p>If your OS can run a bash script, execute <code>demo.sh</code> in the top level of
 this repo to create a new pypackage venv and some simple example
@@ -266,7 +270,7 @@ packages in an <code>example</code> directory. From there feel free to play arou
 and experiment with pypackage features and applications.</p>
 
 <h2>
-<a id="screenshots" class="anchor" href="#screenshots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshots</h2>
+<a id="screenshots" class="anchor" href="#screenshots" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Screenshots</h2>
 
 <p>The following screenshots were all taken with the <code>detected_pkg</code>
 package, which is created by the <code>demo.sh</code> script described in the
@@ -280,13 +284,13 @@ further examples section above.</p>
 
 <p><img src="https://raw.githubusercontent.com/ccpgames/pypackage/gh-pages/images/dev_status_post.png" alt="development status classifiers"></p>
 
-<p>Interactive build process which used the above in it's classifiers
+<p>Interactive build process which used the above in its classifiers
 selection:</p>
 
 <p><img src="https://raw.githubusercontent.com/ccpgames/pypackage/gh-pages/images/interactive_build_post.png" alt="\`py-build -si\` interactive build session"></p>
 
 <h1>
-<a id="copyright-and-license" class="anchor" href="#copyright-and-license" aria-hidden="true"><span class="octicon octicon-link"></span></a>Copyright and License</h1>
+<a id="copyright-and-license" class="anchor" href="#copyright-and-license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Copyright and License</h1>
 
 <p>pypackage was written by Adam Talsma</p>
 
@@ -322,4 +326,3 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
   
   </body>
 </html>
-
