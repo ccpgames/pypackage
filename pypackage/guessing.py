@@ -212,6 +212,7 @@ def _ignored(file_or_dir, is_file=True, _recurse=False):
         r".*\.egg$",
         r".*\.egg-info$",
         r"tests?",
+        r".?venv",
     ]
 
     if not is_file:
