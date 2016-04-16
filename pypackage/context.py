@@ -69,11 +69,16 @@ class ManifestContext(object):
                 if include_line not in self.previously_existing:
                     add_to_manifest.append(include_line)
 
-        for _, files in getattr(self.config, "data_files", []):
-            for file_ in files:
-                include_line = "include {}".format(file_)
-                if include_line not in self.previously_existing:
-                    add_to_manifest.append(include_line)
+        try:
+            for _, files in getattr(self.config, "data_files", []):
+                for file_ in files:
+                    include_line = "include {}".format(file_)
+                    if include_line not in self.previously_existing:
+                        add_to_manifest.append(include_line)
+        except ValueError:
+            raise SystemExit("Malformed data_files: {!r}".format(
+                getattr(self.config, "data_files", [])
+            ))
 
         if add_to_manifest:
             self._clean = True

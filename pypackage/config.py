@@ -82,6 +82,54 @@ class Metadata(object):
                     getattr(self, attr),
                 )))
 
+    def __str__(self):
+        """Self-representation for inclusion in the setup.py."""
+
+        return '''
+class Metadata(object):
+    """Metadata object class to shim the early stages of PKG-INFO writing."""
+
+    def __init__(self):
+        self.metadata_version = {self.metadata_version!r}
+        self.generator = {self.generator!r}
+        self.name = {self.name!r}
+        self.version = {self.version!r}
+        self.summary = {self.summary!r}
+        self.description = {self.description!r}
+        self.home_page = {self.home_page!r}
+        self.url = {self.url!r}
+        self.author = {self.author!r}
+        self.author_email = {self.author_email!r}
+        self.license = {self.license!r}
+        self.platforms = {self.platforms!r}
+        self.platform = {self.platform!r}
+        self.keywords = {self.keywords!r}
+        self.source_label = {self.source_label!r}
+        self.source_url = {self.source_url!r}
+
+    def write_pkg_info(self, egg_info):
+        """Include pypackage custom metadata in PKG-INFO."""
+
+        if sys.version_info > (3,):
+            UNICODE = str
+        else:
+            UNICODE = unicode
+
+        pkg_info = os.path.join(egg_info, "PKG-INFO")
+        info_attrs = ["name", "version", "summary", "home_page",
+                      "author", "author_email", "license",
+                      "description", "platform", "source_label",
+                      "source_url"]
+        with io.open(pkg_info, "w", encoding="utf-8") as openinfo:
+            openinfo.write(UNICODE("Metadata-Version: 1.0\\n"))
+            for attr in info_attrs:
+                openinfo.write(UNICODE("{{}}{{}}: {{}}\\n".format(
+                    attr[0].upper(),
+                    "".join(attr[1:]).replace("_", "-"),
+                    getattr(self, attr),
+                )))
+'''.format(self=self)
+
 
 class Config(object):
     """Config object. Attributes are passed as kwargs."""
@@ -127,7 +175,6 @@ class Config(object):
         ("convert_2to3_doctests", list),
         ("use_2to3_fixtures", list),
         ("extensions", {str: list}),
-        ("metadata", object),
     ])
     # our distinct keys, these do not get passed to setuptools/distutils
     _PYPACKAGE_KEYS = OrderedDict([
@@ -241,14 +288,21 @@ class Config(object):
         cmdclass = self._cmdclass_string()
         long_descr_str = self._long_description_string()
 
-        altered_keys = ("packages", "long_description", "cmdclass")
-        altered_strs = (packages_str, long_descr_str, cmdclass)
+        altered_keys = ["packages", "long_description", "cmdclass"]
+        altered_strs = [packages_str, long_descr_str, cmdclass]
 
         imports = ["from setuptools import setup"]
         if find_needed:
             imports.append("from setuptools import find_packages")
         if self._long_read_in_setup:
             imports.insert(0, "import io")
+        if hasattr(self, "metadata"):
+            if "import io" not in imports:
+                imports.insert(0, "import io")
+            imports.insert(1, "import sys")
+            imports.insert(1, "import os")
+            altered_keys.append("metadata")
+            altered_strs.append("metadata=Metadata()")
 
         return "\n".join([
             '"""{}\'s setup.py.\n'.format(
@@ -258,7 +312,8 @@ class Config(object):
             "should edit the {} rather than this setup.py.".format(META_NAME),
             '"""\n\n',
             "\n".join(imports),
-            self._test_runner_string() or "\n",
+            self._test_runner_string() or "",
+            str(self.metadata) if hasattr(self, "metadata") else "",
             "{}setup(".format(self._long_read_in_setup),
             "\n".join([
                 "    {}={},".format(key, _multiline(val)) for key, val in

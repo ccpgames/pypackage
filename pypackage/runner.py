@@ -65,10 +65,10 @@ class PyPackageTest(TestCommand):
 
 
 PYTEST_TEMPLATE = _TEMPLATE + \
-    "{}raise SystemExit(pytest.main(self.test_args))\n\n".format(" " * 8)
+    "{}raise SystemExit(pytest.main(self.test_args))\n".format(" " * 8)
 
 NOSE_TEMPLATE = _TEMPLATE + \
-    "{}raise SystemExit(nose.main(argv=self.test_args))\n\n".format(" " * 8)
+    "{}raise SystemExit(nose.main(argv=self.test_args))\n".format(" " * 8)
 
 
 # UNITTEST_TEMPLATE requires the extra tests_dir kwarg to be used with format
@@ -79,5 +79,4 @@ UNITTEST_TEMPLATE = _TEMPLATE + """\
             os.path.abspath({tests_dir!r:})
         )
         raise SystemExit(unittest.TextTestRunner().run(test_suite))
-
 """
