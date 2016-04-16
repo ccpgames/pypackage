@@ -252,6 +252,9 @@ class Config(object):
             if packages:
                 kwargs["packages"] = packages
 
+        if hasattr(self, "metadata"):
+            kwargs["metadata"] = self.metadata
+
         return kwargs
 
     @property
@@ -288,6 +291,7 @@ class Config(object):
         cmdclass = self._cmdclass_string()
         long_descr_str = self._long_description_string()
 
+        ignored = ["metadata"]
         altered_keys = ["packages", "long_description", "cmdclass"]
         altered_strs = [packages_str, long_descr_str, cmdclass]
 
@@ -317,7 +321,7 @@ class Config(object):
             "{}setup(".format(self._long_read_in_setup),
             "\n".join([
                 "    {}={},".format(key, _multiline(val)) for key, val in
-                self._as_kwargs.items() if key not in altered_keys
+                self._as_kwargs.items() if key not in altered_keys + ignored
             ]),
             "\n".join(
                 ["    {},".format(altered_str) for altered_str in altered_strs
