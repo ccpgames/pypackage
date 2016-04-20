@@ -738,16 +738,35 @@ def json_maybe_commented(filename, remove_comments=False):
 
     if remove_comments:
         cleaned_lines = []
+        offset = 0
         with open(filename, "r") as openfile:
             for line in openfile:
-                if not re.match("\s*#", line):  # leading whitespace then #
+                if re.match("\s*#", line):  # leading whitespace then #
+                    offset += 1
+                else:
                     cleaned_lines.append(line)
         try:
             return reduce_json_unicode(json.loads("".join(cleaned_lines)))
         except Exception as error:
-            raise SystemExit("Error reading json from {}: {!r}".format(
+            meta_line = ""
+            if offset:
+                if hasattr(error, "lineno"):  # new python
+                    meta_line = " (originally line {} in .meta)".format(
+                        offset + error.lineno
+                    )
+                else:  # old python
+                    try:
+                        meta_line = " (originally line {} in .meta)".format(
+                            offset +
+                            int(error.args[0].split("line ")[1].split()[0])
+                        )
+                    except:
+                        pass
+
+            raise SystemExit("Error reading json from {}: {!r}{}".format(
                 filename,
                 error,
+                meta_line,
             ))
     else:
         try:

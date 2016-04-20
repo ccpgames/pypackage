@@ -242,6 +242,7 @@ def test_json_loading__failure():
     exit = error.exconly()
     assert "SystemExit: Error reading json from {}:".format(filename) in exit
     assert "Expecting property name" in exit
+    assert " (originally line 2 in .meta)" in exit
 
 
 @pytest.mark.parametrize("original, alias", [
