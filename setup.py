@@ -32,7 +32,7 @@ def long_description():
 
 setup(
     name="pypackage",
-    version="0.2.3",
+    version="0.2.4",
     author="Adam Talsma",
     author_email="se-adam.talsma@ccpgames.com",
     url="http://ccpgames.github.io/pypackage",
