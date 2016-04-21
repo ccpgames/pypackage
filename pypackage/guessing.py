@@ -189,6 +189,7 @@ def _ignored(file_or_dir, is_file=True, _recurse=False):
         "tox.ini",
         "conftest.py",
         "pypackage.meta",
+        ".DS_Store",
     ]
 
     ignored_file_patterns = [

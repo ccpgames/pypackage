@@ -14,6 +14,7 @@ import sys
 import pkg_resources
 
 from . import pypackage_setup
+from .cleaner import clean_all
 from .config import get_config
 from .cmdline import get_options
 from .cmdline import help_and_version
@@ -133,3 +134,17 @@ def info():
             ))
 
         separator = True
+
+
+@help_and_version
+def clean():
+    """py-clean will remove generated files from other py-* commands.
+
+    Usage:
+        py-clean [OPTIONS]
+
+    Options:
+        -y      Do not prompt, just delete \
+    """
+
+    clean_all("-y" not in sys.argv)

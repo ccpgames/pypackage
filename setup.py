@@ -58,6 +58,7 @@ setup(
         "py-install = pypackage.commands:install",
         "py-setup   = pypackage.commands:setup",
         "py-test    = pypackage.commands:run_tests",
+        "py-clean   = pypackage.commands:clean",
     ]},
     classifiers=[
         'Development Status :: 4 - Beta',
