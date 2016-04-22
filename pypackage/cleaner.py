@@ -76,7 +76,13 @@ def clean_all(prompt=True):
                 raise SystemExit
 
     for filepath in to_delete:
-        os.unlink(filepath)
+        try:
+            os.unlink(filepath)
+        except Exception as error:
+            print("could not delete {}: {!r}".format(filepath, error))
 
     for root in roots:
-        os.rmdir(root)
+        try:
+            os.rmdir(root)
+        except Exception as error:
+            print("could not delete {}: {!r}".format(root, error))
