@@ -11,6 +11,7 @@ Pypackage is a collection of python packaging applications including:
 ::
 
     py-build
+    py-clean
     py-develop
     py-info
     py-install
