@@ -160,7 +160,7 @@ def test_standard_attributes(reset_sys_argv, move_home_pypackage):
     """Ensure the standard attribute set."""
 
     conf = Config()
-    expected_attrs = list(conf._KEYS.keys())[:17]
+    expected_attrs = list(conf._KEYS.keys())[:conf._STD_TO_EXTD_INDEX]
     conf.name = "foobar"
     conf.classifiers = ["fake classifier"]
     expected_attrs.remove("name")
@@ -176,7 +176,7 @@ def test_standard_attributes__re_config(reset_sys_argv):
     conf.name = "something"
     sys.argv = ["py-build", "-r"]
     attrs = configure.standard_attributes(conf, get_options())
-    expected = list(conf._KEYS.keys())[:17]
+    expected = list(conf._KEYS.keys())[:conf._STD_TO_EXTD_INDEX]
     assert attrs == expected
 
 
@@ -213,10 +213,10 @@ def test_feature_attributes__re_config(reset_sys_argv):
 
 
 def test_extended_attributes(reset_sys_argv, move_home_pypackage):
-    """Extended attributes should return any unset keys past 17."""
+    """Extended attributes should return unset keys past _STD_TO_EXTD_INDEX."""
 
     conf = Config()
-    expected = list(conf._KEYS.keys())[17:]
+    expected = list(conf._KEYS.keys())[conf._STD_TO_EXTD_INDEX:]
     conf.use_2to3 = True
     expected.remove("use_2to3")
     attrs = configure.extended_attributes(conf, get_options())
@@ -230,7 +230,7 @@ def test_extended_attributes__re_config(reset_sys_argv):
     conf.use_2to3 = True
     sys.argv = ["py-build", "-r"]
     attrs = configure.extended_attributes(conf, get_options())
-    expected = list(conf._KEYS.keys())[17:]
+    expected = list(conf._KEYS.keys())[conf._STD_TO_EXTD_INDEX:]
     assert attrs == expected
 
 

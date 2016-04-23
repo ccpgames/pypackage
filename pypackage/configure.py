@@ -136,7 +136,7 @@ def standard_attributes(config, options):
         config: config object to use
     """
 
-    all_in_this_cat = list(config._KEYS.keys())[:17]
+    all_in_this_cat = list(config._KEYS.keys())[:config._STD_TO_EXTD_INDEX]
 
     if options.re_config:
         return all_in_this_cat
@@ -170,7 +170,7 @@ def feature_attributes(config, options):
 def extended_attributes(config, options):
     """Builds a list of unconfigured extended attributes in config."""
 
-    all_in_this_cat = list(config._KEYS.keys())[17:]
+    all_in_this_cat = list(config._KEYS.keys())[config._STD_TO_EXTD_INDEX:]
 
     if options.re_config:
         return all_in_this_cat

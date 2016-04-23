@@ -134,6 +134,7 @@ class Metadata(object):
 class Config(object):
     """Config object. Attributes are passed as kwargs."""
 
+    _STD_TO_EXTD_INDEX = 18
     _KEYS = OrderedDict([  # all available configuration keys: value type
         ("name", str),
         ("version", str),
@@ -143,6 +144,7 @@ class Config(object):
         ("author_email", str),
         ("maintainer", str),
         ("maintainer_email", str),
+        ("license", str),
         ("url", str),
         ("download_url", str),
         ("packages", list),
