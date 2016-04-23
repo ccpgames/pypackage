@@ -320,7 +320,7 @@ def test_write_pkg_info_shim(source_release):
     with io.open(pkg_info_file, "r", encoding="utf-8") as openinfo:
         pkg_info = openinfo.read()
 
-    assert pkg_info.startswith("Metadata-Version: 1.0")
+    assert pkg_info.startswith("Metadata-Version: 2.0")
     assert "Source-label: {}".format(source_label) in pkg_info
     assert "Source-url: {}".format(source_url) in pkg_info
 
