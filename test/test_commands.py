@@ -27,10 +27,9 @@ def test_run_develop():
     with mock.patch.object(commands, "pypackage_setup") as patched_setup:
         commands.develop()
 
-    patched_setup.assert_called_once_with(
-        ["develop"],
-        additional=commands.develop.__doc__,
-    )
+    mock_call = patched_setup.mock_calls[0]
+    assert mock_call[1][0] == ["develop", "test"]
+    assert mock_call[1][-1] == commands.develop.__doc__
 
 
 @pytest.mark.parametrize("flag", ("s", "m"), ids=("setup", "metadata"))
