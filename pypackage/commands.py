@@ -47,7 +47,9 @@ def run_tests():
 def develop():
     """py-develop will build a setup.py and run the develop command with it."""
 
-    pypackage_setup(["develop"], additional=develop.__doc__)
+    options = get_options()
+    options.help = False  # let --help fall through to setuptools
+    pypackage_setup(["develop"] + sys.argv[1:], options, develop.__doc__)
 
 
 def build():
